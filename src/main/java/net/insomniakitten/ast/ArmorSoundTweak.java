@@ -26,8 +26,12 @@ public class ArmorSoundTweak {
     public static final String MOD_VERSION = "%VERSION%";
     public static final String MC_VERSIONS = "[1.11,1.13)";
 
-    private static final ImmutableList<EntityEquipmentSlot> ARMOR_SLOTS = ImmutableList.of(EntityEquipmentSlot.HEAD,
-            EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET);
+    private static final ImmutableList<EntityEquipmentSlot> ARMOR_SLOTS = ImmutableList.of(
+            EntityEquipmentSlot.HEAD,
+            EntityEquipmentSlot.CHEST,
+            EntityEquipmentSlot.LEGS,
+            EntityEquipmentSlot.FEET
+    );
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
