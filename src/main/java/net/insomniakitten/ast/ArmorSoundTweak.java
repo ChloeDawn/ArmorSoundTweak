@@ -38,34 +38,31 @@ public class ArmorSoundTweak {
 
         if (event.phase.equals(TickEvent.Phase.END) && mc.player != null && mc.currentScreen != null) {
             List<ItemStack> equipmentCache = Lists.newArrayList(mc.player.getArmorInventoryList());
+            Iterator<ItemStack> lastStacks = lastEquipment.iterator();
+            Iterator<ItemStack> cacheStacks = equipmentCache.iterator();
 
-            if (!lastEquipment.isEmpty() && !equipmentCache.isEmpty()) {
-                Iterator<ItemStack> lastStacks = lastEquipment.iterator();
-                Iterator<ItemStack> cacheStacks = equipmentCache.iterator();
+            while (lastStacks.hasNext() && cacheStacks.hasNext()) {
+                ItemStack lastStack = lastStacks.next();
+                ItemStack cacheStack = cacheStacks.next();
 
-                while (lastStacks.hasNext() && cacheStacks.hasNext()) {
-                    ItemStack lastStack = lastStacks.next();
-                    ItemStack cacheStack = cacheStacks.next();
+                if (lastStack != cacheStack) {
+                    ItemStack armorStack;
 
-                    if (lastStack != cacheStack) {
-                        ItemStack armorStack;
+                    if (lastStack != null && lastStack.getItem() instanceof ItemArmor) {
+                        armorStack = lastStack;
+                    } else if (cacheStack != null && cacheStack.getItem() instanceof ItemArmor) {
+                        armorStack = cacheStack;
+                    } else {
+                        armorStack = null;
+                    }
 
-                        if (lastStack != null && lastStack.getItem() instanceof ItemArmor) {
-                            armorStack = lastStack;
-                        } else if (cacheStack != null && cacheStack.getItem() instanceof ItemArmor) {
-                            armorStack = cacheStack;
-                        } else {
-                            armorStack = null;
-                        }
+                    if (armorStack != null) {
+                        ItemArmor armor = ((ItemArmor) armorStack.getItem());
 
-                        if (armorStack != null) {
-                            ItemArmor armor = ((ItemArmor) armorStack.getItem());
-
-                            mc.player.world.playSound(mc.player, new BlockPos(mc.player),
-                                    armor.getArmorMaterial().getSoundEvent(),
-                                    SoundCategory.PLAYERS, 1.0f, 1.0f);
-                            break;
-                        }
+                        mc.player.world.playSound(mc.player, new BlockPos(mc.player),
+                                armor.getArmorMaterial().getSoundEvent(),
+                                SoundCategory.PLAYERS, 1.0f, 1.0f);
+                        break;
                     }
                 }
             }
