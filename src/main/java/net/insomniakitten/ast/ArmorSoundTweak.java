@@ -1,7 +1,7 @@
 package net.insomniakitten.ast;
 
+import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
@@ -36,9 +36,7 @@ public class ArmorSoundTweak {
         Minecraft mc = Minecraft.getMinecraft();
 
         if (event.phase.equals(TickEvent.Phase.END) && mc.player != null && mc.currentScreen != null) {
-
-            List<ItemStack> equipmentCache = new ArrayList<>();
-            mc.player.getArmorInventoryList().forEach(equipmentCache::add);
+            List<ItemStack> equipmentCache = Lists.newArrayList(mc.player.getArmorInventoryList());
 
             int oldSize = lastEquipment.size();
             int newSize = equipmentCache.size();
@@ -54,9 +52,9 @@ public class ArmorSoundTweak {
                         } else if (cacheStack != null && cacheStack.getItem() instanceof ItemArmor) {
                             armorStack = cacheStack;
                         } else {
-                            armorStack = new ItemStack(Items.AIR);
+                            armorStack = null;
                         }
-                        if (armorStack.getItem() instanceof ItemArmor && mc.player.world.isRemote) {
+                        if (armorStack != null && armorStack.getItem() instanceof ItemArmor) {
                             ItemArmor armor = ((ItemArmor) armorStack.getItem());
                             mc.player.world.playSound(mc.player, new BlockPos(mc.player),
                                     armor.getArmorMaterial().getSoundEvent(),
