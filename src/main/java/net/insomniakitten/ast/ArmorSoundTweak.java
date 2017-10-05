@@ -28,6 +28,7 @@ public class ArmorSoundTweak {
     public static final String MC_VERSIONS = "[1.10,1.11)";
 
     private static List<ItemStack> lastEquipment = new ArrayList<>();
+    private static BlockPos.MutableBlockPos playerPos = new BlockPos.MutableBlockPos();
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
@@ -40,8 +41,8 @@ public class ArmorSoundTweak {
             }
             if (lastEquipment.size() != equipmentCache.size()) {
                 if (mc.player.world.isRemote) {
-                    BlockPos pos = new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ);
-                    mc.player.world.playSound(mc.player, pos,
+                    playerPos.setPos(mc.player);
+                    mc.player.world.playSound(mc.player, playerPos,
                             SoundEvents.ITEM_ARMOR_EQUIP_GENERIC,
                             SoundCategory.PLAYERS, 1.0f, 1.0f);
                 }
