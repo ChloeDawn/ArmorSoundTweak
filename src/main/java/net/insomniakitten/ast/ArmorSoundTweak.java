@@ -13,6 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Mod(modid = ArmorSoundTweak.MOD_ID,
@@ -39,13 +40,14 @@ public class ArmorSoundTweak {
             List<ItemStack> equipmentCache = Lists.newArrayList(mc.player.getArmorInventoryList());
 
             if (!lastEquipment.isEmpty() && !equipmentCache.isEmpty()) {
-                int oldSize = lastEquipment.size();
-                int newSize = equipmentCache.size();
+                Iterator<ItemStack> lastStacks = lastEquipment.iterator();
+                Iterator<ItemStack> cacheStacks = equipmentCache.iterator();
 
-                for (int i = 0; i < (oldSize > newSize ? oldSize : newSize); ++i) {
-                    if (lastEquipment.get(i) != equipmentCache.get(i)) {
-                        ItemStack lastStack = lastEquipment.get(i);
-                        ItemStack cacheStack = equipmentCache.get(i);
+                while (lastStacks.hasNext() && cacheStacks.hasNext()) {
+                    ItemStack lastStack = lastStacks.next();
+                    ItemStack cacheStack = cacheStacks.next();
+
+                    if (lastStack != cacheStack) {
                         ItemStack armorStack;
 
                         if (lastStack != null && lastStack.getItem() instanceof ItemArmor) {
@@ -56,11 +58,13 @@ public class ArmorSoundTweak {
                             armorStack = null;
                         }
 
-                        if (armorStack != null && armorStack.getItem() instanceof ItemArmor) {
+                        if (armorStack != null) {
                             ItemArmor armor = ((ItemArmor) armorStack.getItem());
+
                             mc.player.world.playSound(mc.player, new BlockPos(mc.player),
                                     armor.getArmorMaterial().getSoundEvent(),
                                     SoundCategory.PLAYERS, 1.0f, 1.0f);
+                            break;
                         }
                     }
                 }
