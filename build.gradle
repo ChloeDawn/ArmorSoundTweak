@@ -10,7 +10,7 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = modVersion
+version = "$mcVersion-$modVersion"
 group = 'net.insomniakitten.ast'
 archivesBaseName = 'armorsoundtweak'
 
