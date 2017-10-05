@@ -34,13 +34,13 @@ public class ArmorSoundTweak {
     @SideOnly(Side.CLIENT)
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
-        if (event.phase.equals(TickEvent.Phase.END) && mc.player != null) {
+        if (event.phase.equals(TickEvent.Phase.END) && mc.player != null && mc.currentScreen != null) {
             List<ItemStack> equipmentCache = new ArrayList<>();
             for (ItemStack stack : mc.player.getArmorInventoryList()) {
                 if (stack != null) equipmentCache.add(stack);
             }
             if (lastEquipment.size() != equipmentCache.size()) {
-                if (mc.player.world.isRemote && mc.currentScreen != null) {
+                if (mc.player.world.isRemote) {
                     playerPos.setPos(mc.player);
                     mc.player.world.playSound(mc.player, playerPos,
                             SoundEvents.ITEM_ARMOR_EQUIP_GENERIC,
