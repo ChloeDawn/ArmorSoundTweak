@@ -5,7 +5,6 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -48,8 +47,8 @@ public class ArmorSoundTweak {
                     if (lastEquipment.get(i) != equipmentCache.get(i)) {
                         ItemStack lastStack = lastEquipment.get(i);
                         ItemStack cacheStack = equipmentCache.get(i);
-                        ItemStack stack = checkStackPresence(lastStack) ? lastStack : cacheStack;
-                        if (checkStackPresence(equipmentCache.get(i)) && isArmor(stack) && mc.player.world.isRemote) {
+                        ItemStack stack = lastStack != null ? lastStack : cacheStack;
+                        if (stack != null && stack.getItem() instanceof ItemArmor && mc.player.world.isRemote) {
                             ItemArmor.ArmorMaterial material = ((ItemArmor) stack.getItem()).getArmorMaterial();
                             mc.player.world.playSound(mc.player, new BlockPos(mc.player),
                                     material.getSoundEvent(), SoundCategory.PLAYERS, 1.0f, 1.0f);
@@ -60,20 +59,6 @@ public class ArmorSoundTweak {
 
             lastEquipment = equipmentCache;
         }
-    }
-
-    private static boolean isArmor(ItemStack stack) {
-        return stack.getItem() instanceof ItemArmor;
-    }
-
-    private static boolean checkStackPresence(ItemStack stack) {
-        return hasNonNullStacks() ? !NonNullStackHelper.isEmpty(stack) : stack != null;
-    }
-
-    private static boolean hasNonNullStacks() {
-        String ver = MinecraftForge.MC_VERSION;
-        //noinspection ConstantConditions
-        return ver.startsWith("1.11") || ver.startsWith("1.12");
     }
 
 }
