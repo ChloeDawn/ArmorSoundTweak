@@ -47,6 +47,7 @@ public class ArmorSoundTweak {
                         ItemStack lastStack = lastEquipment.get(i);
                         ItemStack cacheStack = equipmentCache.get(i);
                         ItemStack armorStack;
+
                         if (lastStack != null && lastStack.getItem() instanceof ItemArmor) {
                             armorStack = lastStack;
                         } else if (cacheStack != null && cacheStack.getItem() instanceof ItemArmor) {
@@ -54,6 +55,7 @@ public class ArmorSoundTweak {
                         } else {
                             armorStack = null;
                         }
+
                         if (armorStack != null && armorStack.getItem() instanceof ItemArmor) {
                             ItemArmor armor = ((ItemArmor) armorStack.getItem());
                             mc.player.world.playSound(mc.player, new BlockPos(mc.player),
