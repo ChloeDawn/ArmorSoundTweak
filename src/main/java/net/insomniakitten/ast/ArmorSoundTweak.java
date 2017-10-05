@@ -1,6 +1,7 @@
 package net.insomniakitten.ast;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
@@ -47,11 +48,21 @@ public class ArmorSoundTweak {
                     if (lastEquipment.get(i) != equipmentCache.get(i)) {
                         ItemStack lastStack = lastEquipment.get(i);
                         ItemStack cacheStack = equipmentCache.get(i);
-                        ItemStack stack = lastStack != null ? lastStack : cacheStack;
-                        if (stack != null && stack.getItem() instanceof ItemArmor && mc.player.world.isRemote) {
-                            ItemArmor.ArmorMaterial material = ((ItemArmor) stack.getItem()).getArmorMaterial();
+                        lastStack = lastStack != null ? lastStack : new ItemStack(Items.AIR);
+                        cacheStack = cacheStack != null ? cacheStack : new ItemStack(Items.AIR);
+                        ItemStack armorStack;
+                        if (lastStack.getItem() instanceof ItemArmor) {
+                            armorStack = lastStack;
+                        } else if (cacheStack.getItem() instanceof ItemArmor) {
+                            armorStack = cacheStack;
+                        } else {
+                            armorStack = new ItemStack(Items.AIR);
+                        }
+                        if (armorStack.getItem() instanceof ItemArmor && mc.player.world.isRemote) {
+                            ItemArmor armor = ((ItemArmor) armorStack.getItem());
                             mc.player.world.playSound(mc.player, new BlockPos(mc.player),
-                                    material.getSoundEvent(), SoundCategory.PLAYERS, 1.0f, 1.0f);
+                                    armor.getArmorMaterial().getSoundEvent(),
+                                    SoundCategory.PLAYERS, 1.0f, 1.0f);
                         }
                     }
                 }
