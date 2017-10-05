@@ -38,10 +38,10 @@ public class ArmorSoundTweak {
         if (event.phase.equals(TickEvent.Phase.END) && mc.player != null && mc.currentScreen != null) {
             List<ItemStack> equipmentCache = Lists.newArrayList(mc.player.getArmorInventoryList());
 
-            int oldSize = lastEquipment.size();
-            int newSize = equipmentCache.size();
-
             if (!lastEquipment.isEmpty() && !equipmentCache.isEmpty()) {
+                int oldSize = lastEquipment.size();
+                int newSize = equipmentCache.size();
+
                 for (int i = 0; i < (oldSize > newSize ? oldSize : newSize); ++i) {
                     if (lastEquipment.get(i) != equipmentCache.get(i)) {
                         ItemStack lastStack = lastEquipment.get(i);
