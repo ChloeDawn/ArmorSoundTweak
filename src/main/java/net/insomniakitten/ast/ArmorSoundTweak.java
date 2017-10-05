@@ -39,13 +39,10 @@ public class ArmorSoundTweak {
             for (ItemStack stack : mc.player.getArmorInventoryList()) {
                 if (stack != null) equipmentCache.add(stack);
             }
-            if (lastEquipment.size() != equipmentCache.size()) {
-                if (mc.player.world.isRemote) {
-                    playerPos.setPos(mc.player);
-                    mc.player.world.playSound(mc.player, playerPos,
-                            SoundEvents.ITEM_ARMOR_EQUIP_GENERIC,
-                            SoundCategory.PLAYERS, 1.0f, 1.0f);
-                }
+            if (lastEquipment.size() != equipmentCache.size() && mc.player.world.isRemote) {
+                mc.player.world.playSound(mc.player, playerPos.setPos(mc.player),
+                        SoundEvents.ITEM_ARMOR_EQUIP_GENERIC,
+                        SoundCategory.PLAYERS, 1.0f, 1.0f);
             }
             lastEquipment = equipmentCache;
         }
