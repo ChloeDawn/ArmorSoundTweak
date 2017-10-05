@@ -37,21 +37,21 @@ public class ArmorSoundTweak {
         Minecraft mc = Minecraft.getMinecraft();
 
         if (event.phase.equals(TickEvent.Phase.END) && mc.player != null && mc.currentScreen != null) {
-            List<ItemStack> equipmentCache = Lists.newArrayList(mc.player.getArmorInventoryList());
+            List<ItemStack> equipment = Lists.newArrayList(mc.player.getArmorInventoryList());
             Iterator<ItemStack> lastStacks = lastEquipment.iterator();
-            Iterator<ItemStack> cacheStacks = equipmentCache.iterator();
+            Iterator<ItemStack> newStacks = equipment.iterator();
 
-            while (lastStacks.hasNext() && cacheStacks.hasNext()) {
+            while (lastStacks.hasNext() && newStacks.hasNext()) {
                 ItemStack lastStack = lastStacks.next();
-                ItemStack cacheStack = cacheStacks.next();
+                ItemStack newStack = newStacks.next();
 
-                if (lastStack != cacheStack) {
+                if (lastStack != newStack) {
                     ItemStack armorStack;
 
                     if (lastStack != null && lastStack.getItem() instanceof ItemArmor) {
                         armorStack = lastStack;
-                    } else if (cacheStack != null && cacheStack.getItem() instanceof ItemArmor) {
-                        armorStack = cacheStack;
+                    } else if (newStack != null && newStack.getItem() instanceof ItemArmor) {
+                        armorStack = newStack;
                     } else {
                         armorStack = null;
                     }
@@ -67,7 +67,7 @@ public class ArmorSoundTweak {
                 }
             }
 
-            lastEquipment = equipmentCache;
+            lastEquipment = equipment;
         }
     }
 
