@@ -48,12 +48,10 @@ public class ArmorSoundTweak {
                     if (lastEquipment.get(i) != equipmentCache.get(i)) {
                         ItemStack lastStack = lastEquipment.get(i);
                         ItemStack cacheStack = equipmentCache.get(i);
-                        lastStack = lastStack != null ? lastStack : new ItemStack(Items.AIR);
-                        cacheStack = cacheStack != null ? cacheStack : new ItemStack(Items.AIR);
                         ItemStack armorStack;
-                        if (lastStack.getItem() instanceof ItemArmor) {
+                        if (lastStack != null && lastStack.getItem() instanceof ItemArmor) {
                             armorStack = lastStack;
-                        } else if (cacheStack.getItem() instanceof ItemArmor) {
+                        } else if (cacheStack != null && cacheStack.getItem() instanceof ItemArmor) {
                             armorStack = cacheStack;
                         } else {
                             armorStack = new ItemStack(Items.AIR);
