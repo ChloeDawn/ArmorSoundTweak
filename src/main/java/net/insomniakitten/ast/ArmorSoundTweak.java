@@ -36,7 +36,7 @@ public class ArmorSoundTweak {
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (event.phase.equals(TickEvent.Phase.END) && mc.player != null && mc.currentScreen != null) {
+        if (event.phase.equals(TickEvent.Phase.START) && mc.player != null && mc.currentScreen != null) {
             List<ItemStack> equipment = Lists.newArrayList(mc.player.getArmorInventoryList());
             Iterator<ItemStack> lastStacks = lastEquipment.iterator();
             Iterator<ItemStack> newStacks = equipment.iterator();
