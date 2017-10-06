@@ -19,7 +19,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 @Mod(modid = ArmorSoundTweak.ID,
      name = ArmorSoundTweak.NAME,
@@ -42,7 +41,10 @@ public class ArmorSoundTweak {
         Minecraft mc = Minecraft.getMinecraft();
 
         if (event.phase == TickEvent.Phase.START && mc.player != null) {
-            List<ItemStack> equipment = Lists.newArrayList(mc.player.getArmorInventoryList());
+            List<ItemStack> equipment = Lists.newArrayList();
+            mc.player.getArmorInventoryList().forEach(
+                    stack -> equipment.add(stack.copy())
+            );
 
             if (mc.currentScreen != null) {
                 Iterator<ItemStack> newStacks = equipment.iterator();
@@ -52,7 +54,7 @@ public class ArmorSoundTweak {
                     ItemStack newStack = newStacks.next();
                     ItemStack lastStack = lastStacks.next();
 
-                    if (!Objects.equals(lastStack, newStack)) {
+                    if (!ItemStack.areItemsEqualIgnoreDurability(newStack, lastStack)) {
                         if (isValidEquipment(newStack)) {
                             playEquipSound(newStack, mc.player);
                         } else if (isValidEquipment(lastStack)) {
