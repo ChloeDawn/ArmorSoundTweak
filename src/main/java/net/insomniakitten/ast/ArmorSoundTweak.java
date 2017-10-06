@@ -17,7 +17,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class ArmorSoundTweak {
     public static final String VERSION = "%VERSION%";
     public static final String MC_VERSIONS = "[1.10,1.13)";
 
-    private static List<ItemStack> lastEquipment = new ArrayList<>();
+    private static List<ItemStack> lastEquipment = Lists.newArrayList();
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
