@@ -19,6 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 @Mod(modid = ArmorSoundTweak.ID,
      name = ArmorSoundTweak.NAME,
@@ -51,7 +52,7 @@ public class ArmorSoundTweak {
                     ItemStack newStack = newStacks.next();
                     ItemStack lastStack = lastStacks.next();
 
-                    if (lastStack != newStack) {
+                    if (!Objects.equals(lastStack, newStack)) {
                         if (isValidEquipment(newStack)) {
                             playEquipSound(newStack, mc.player);
                         } else if (isValidEquipment(lastStack)) {
