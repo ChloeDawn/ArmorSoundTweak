@@ -2,9 +2,14 @@ package net.insomniakitten.ast;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -34,11 +39,12 @@ public class ArmorSoundTweak {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase.equals(TickEvent.Phase.START)) {
-            Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getMinecraft();
+
+        if (event.phase.equals(TickEvent.Phase.START) && mc.player != null) {
             List<ItemStack> equipment = Lists.newArrayList(mc.player.getArmorInventoryList());
 
-            if (mc.player != null && mc.currentScreen != null) {
+            if (mc.currentScreen != null) {
                 Iterator<ItemStack> newStacks = equipment.iterator();
                 Iterator<ItemStack> lastStacks = lastEquipment.iterator();
 
@@ -47,29 +53,38 @@ public class ArmorSoundTweak {
                     ItemStack lastStack = lastStacks.next();
 
                     if (lastStack != newStack) {
-                        ItemStack armorStack;
-
-                        if (newStack != null && newStack.getItem() instanceof ItemArmor) {
-                            armorStack = newStack;
-                        } else if (lastStack != null && lastStack.getItem() instanceof ItemArmor) {
-                            armorStack = lastStack;
-                        } else {
-                            armorStack = null;
-                        }
-
-                        if (armorStack != null) {
-                            ItemArmor armor = ((ItemArmor) armorStack.getItem());
-
-                            mc.player.world.playSound(mc.player, new BlockPos(mc.player),
-                                    armor.getArmorMaterial().getSoundEvent(),
-                                    SoundCategory.PLAYERS, 1.0f, 1.0f);
-                            break;
+                        if (isValidEquipment(newStack)) {
+                            playEquipSound(newStack, mc.player);
+                        } else if (isValidEquipment(lastStack)) {
+                            playEquipSound(lastStack, mc.player);
                         }
                     }
                 }
             }
 
             lastEquipment = equipment;
+        }
+    }
+
+    private static boolean isValidEquipment(ItemStack stack) {
+        return stack != null
+                && (stack.getItem() instanceof ItemArmor
+                || stack.getItem() instanceof ItemElytra);
+    }
+
+    private static void playEquipSound(ItemStack stack, EntityPlayer player) {
+        Item item = stack.getItem();
+        SoundEvent sound = null;
+
+        if (item instanceof ItemArmor) {
+            sound = ((ItemArmor) item).getArmorMaterial().getSoundEvent();
+        } else if (item instanceof ItemElytra) {
+            sound = SoundEvents.ITEM_ARMOR_EQIIP_ELYTRA;
+        }
+
+        if (sound != null) {
+            player.world.playSound(player, new BlockPos(player),
+                    sound, SoundCategory.PLAYERS, 1.0f, 1.0f);
         }
     }
 
