@@ -16,17 +16,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@Mod(modid = ArmorSoundTweak.MOD_ID,
-     name = ArmorSoundTweak.MOD_NAME,
-     version = ArmorSoundTweak.MOD_VERSION,
+@Mod(modid = ArmorSoundTweak.ID,
+     name = ArmorSoundTweak.NAME,
+     version = ArmorSoundTweak.VERSION,
      acceptedMinecraftVersions = ArmorSoundTweak.MC_VERSIONS,
      clientSideOnly = true)
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class ArmorSoundTweak {
 
-    public static final String MOD_ID = "armorsoundtweak";
-    public static final String MOD_NAME = "Armor Sound Tweak";
-    public static final String MOD_VERSION = "%VERSION%";
+    public static final String ID = "armorsoundtweak";
+    public static final String NAME = "Armor Sound Tweak";
+    public static final String VERSION = "%VERSION%";
     public static final String MC_VERSIONS = "[1.10,1.13)";
 
     private static List<ItemStack> lastEquipment = new ArrayList<>();
