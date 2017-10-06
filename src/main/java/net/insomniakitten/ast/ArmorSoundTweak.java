@@ -38,20 +38,20 @@ public class ArmorSoundTweak {
 
         if (event.phase.equals(TickEvent.Phase.START) && mc.player != null && mc.currentScreen != null) {
             List<ItemStack> equipment = Lists.newArrayList(mc.player.getArmorInventoryList());
-            Iterator<ItemStack> lastStacks = lastEquipment.iterator();
             Iterator<ItemStack> newStacks = equipment.iterator();
+            Iterator<ItemStack> lastStacks = lastEquipment.iterator();
 
             while (lastStacks.hasNext() && newStacks.hasNext()) {
-                ItemStack lastStack = lastStacks.next();
                 ItemStack newStack = newStacks.next();
+                ItemStack lastStack = lastStacks.next();
 
                 if (lastStack != newStack) {
                     ItemStack armorStack;
 
-                    if (lastStack != null && lastStack.getItem() instanceof ItemArmor) {
-                        armorStack = lastStack;
-                    } else if (newStack != null && newStack.getItem() instanceof ItemArmor) {
+                    if (newStack != null && newStack.getItem() instanceof ItemArmor) {
                         armorStack = newStack;
+                    } else if (lastStack != null && lastStack.getItem() instanceof ItemArmor) {
+                        armorStack = lastStack;
                     } else {
                         armorStack = null;
                     }
