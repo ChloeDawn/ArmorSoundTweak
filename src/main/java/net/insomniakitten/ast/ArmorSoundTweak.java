@@ -69,8 +69,7 @@ public class ArmorSoundTweak {
                 }
             }
 
-            lastEquipment.clear();
-            lastEquipment.addAll(equipment);
+            lastEquipment = equipment;
         }
     }
 
