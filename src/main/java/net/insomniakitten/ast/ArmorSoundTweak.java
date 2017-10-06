@@ -8,10 +8,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -19,6 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Mod(modid = ArmorSoundTweak.ID,
      name = ArmorSoundTweak.NAME,
@@ -33,6 +36,7 @@ public class ArmorSoundTweak {
     public static final String VERSION = "%VERSION%";
     public static final String MC_VERSIONS = "[1.10,1.13)";
 
+    private static SoundEvent soundElytraEquip;
     private static List<ItemStack> lastEquipment = Lists.newArrayList();
 
     @SubscribeEvent
@@ -82,17 +86,20 @@ public class ArmorSoundTweak {
         if (item instanceof ItemArmor) {
             sound = ((ItemArmor) item).getArmorMaterial().getSoundEvent();
         } else if (item instanceof ItemElytra) {
-            try {
-                sound = SoundEvents.ITEM_ARMOR_EQIIP_ELYTRA;
-            } catch (NoSuchFieldError ignored) {
-                sound = SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
-            }
+            sound = soundElytraEquip;
         }
 
         if (sound != null) {
             player.world.playSound(player, new BlockPos(player),
                     sound, SoundCategory.PLAYERS, 1.0f, 1.0f);
         }
+    }
+
+    @Mod.EventHandler
+    public void onPostInit(FMLPostInitializationEvent event) {
+        ResourceLocation id = new ResourceLocation("item.armor.equip_elytra");
+        SoundEvent fallback = SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+        soundElytraEquip = Optional.ofNullable(SoundEvent.REGISTRY.getObject(id)).orElse(fallback);
     }
 
 }
