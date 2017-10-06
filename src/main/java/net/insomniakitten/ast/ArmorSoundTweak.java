@@ -44,7 +44,7 @@ public class ArmorSoundTweak {
             List<ItemStack> equipment = Lists.newArrayList();
 
             mc.player.getArmorInventoryList().forEach(
-                    stack -> equipment.add(stack.copy())
+                    stack -> equipment.add(stack != null ? stack.copy() : stack)
             );
 
             if (mc.currentScreen != null) {
@@ -82,7 +82,11 @@ public class ArmorSoundTweak {
         if (item instanceof ItemArmor) {
             sound = ((ItemArmor) item).getArmorMaterial().getSoundEvent();
         } else if (item instanceof ItemElytra) {
-            sound = SoundEvents.ITEM_ARMOR_EQIIP_ELYTRA;
+            try {
+                sound = SoundEvents.ITEM_ARMOR_EQIIP_ELYTRA;
+            } catch (NoSuchFieldError ignored) {
+                sound = SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+            }
         }
 
         if (sound != null) {
