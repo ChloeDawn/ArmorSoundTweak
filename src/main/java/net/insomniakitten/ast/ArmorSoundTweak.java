@@ -47,9 +47,9 @@ public class ArmorSoundTweak {
         if (event.phase == TickEvent.Phase.START && mc.player != null) {
             List<ItemStack> equipment = Lists.newArrayList();
 
-            mc.player.getArmorInventoryList().forEach(
-                    stack -> equipment.add(stack != null ? stack.copy() : stack)
-            );
+            for (ItemStack stack : mc.player.getArmorInventoryList()) {
+                equipment.add(stack != null ? stack.copy() : stack);
+            }
 
             if (mc.currentScreen != null) {
                 Iterator<ItemStack> newStacks = equipment.iterator();
