@@ -2,6 +2,7 @@ package net.insomniakitten.ast;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -51,7 +52,7 @@ public class ArmorSoundTweak {
                 equipment.add(stack != null ? stack.copy() : stack);
             }
 
-            if (mc.currentScreen != null) {
+            if (mc.currentScreen != null && mc.currentScreen instanceof GuiContainer) {
                 Iterator<ItemStack> newStacks = equipment.iterator();
                 Iterator<ItemStack> lastStacks = lastEquipment.iterator();
 
