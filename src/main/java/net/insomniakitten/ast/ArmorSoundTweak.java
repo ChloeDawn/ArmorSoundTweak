@@ -34,10 +34,11 @@ public class ArmorSoundTweak {
     public static final String ID = "armorsoundtweak";
     public static final String NAME = "Armor Sound Tweak";
     public static final String VERSION = "%VERSION%";
-    public static final String MC_VERSIONS = "[1.10,1.13)";
+    public static final String MC_VERSIONS = "[1.11,1.13)";
 
     private static SoundEvent soundElytraEquip;
     private static List<ItemStack> lastEquipment = Lists.newArrayList();
+    private static Integer lastDimension = null;
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
@@ -47,30 +48,40 @@ public class ArmorSoundTweak {
         if (event.phase == TickEvent.Phase.START && mc.player != null) {
             List<ItemStack> equipment = Lists.newArrayList();
 
-            mc.player.getArmorInventoryList().forEach(
-                    stack -> equipment.add(stack != null ? stack.copy() : stack)
-            );
+            for (ItemStack stack : mc.player.getArmorInventoryList()) {
+                equipment.add(stack != null ? stack.copy() : stack);
+            }
 
             if (mc.currentScreen != null) {
                 Iterator<ItemStack> newStacks = equipment.iterator();
                 Iterator<ItemStack> lastStacks = lastEquipment.iterator();
 
-                while (lastStacks.hasNext() && newStacks.hasNext()) {
-                    ItemStack newStack = newStacks.next();
-                    ItemStack lastStack = lastStacks.next();
+                if (lastDimension == mc.player.dimension || isWearingArmor(equipment)) {
+                    while (lastStacks.hasNext() && newStacks.hasNext()) {
+                        ItemStack newStack = newStacks.next();
+                        ItemStack lastStack = lastStacks.next();
 
-                    if (!ItemStack.areItemsEqualIgnoreDurability(newStack, lastStack)) {
-                        if (isValidEquipment(newStack)) {
-                            playEquipSound(newStack, mc.player);
-                        } else if (isValidEquipment(lastStack)) {
-                            playEquipSound(lastStack, mc.player);
+                        if (!ItemStack.areItemsEqualIgnoreDurability(newStack, lastStack)) {
+                            if (isValidEquipment(newStack)) {
+                                playEquipSound(newStack, mc.player);
+                            } else if (isValidEquipment(lastStack)) {
+                                playEquipSound(lastStack, mc.player);
+                            }
                         }
                     }
+                    lastDimension = mc.player.dimension;
                 }
             }
 
             lastEquipment = equipment;
         }
+    }
+
+    private static boolean isWearingArmor(Iterable<ItemStack> armorStacks) {
+        for (ItemStack armor : armorStacks) {
+            if (!armor.isEmpty()) return true;
+        }
+        return false;
     }
 
     private static boolean isValidEquipment(ItemStack stack) {
