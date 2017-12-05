@@ -46,6 +46,7 @@ public class ArmorSoundTweak {
         Minecraft mc = Minecraft.getMinecraft();
 
         if (event.phase == TickEvent.Phase.START && mc.player != null) {
+            if (lastDimension == null) lastDimension = mc.player.dimension;
             List<ItemStack> equipment = Lists.newArrayList();
 
             for (ItemStack stack : mc.player.getArmorInventoryList()) {
