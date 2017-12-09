@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-@Mod(modid = ArmorSoundTweak.ID, name = ArmorSoundTweak.NAME, version = ArmorSoundTweak.VERSION, clientSideOnly = true)
+@Mod(modid = ArmorSoundTweak.ID, name = ArmorSoundTweak.NAME, version = ArmorSoundTweak.VERSION, acceptedMinecraftVersions = "[1.10,1.13)", clientSideOnly = true)
 @Mod.EventBusSubscriber(Side.CLIENT)
 public final class ArmorSoundTweak {
 
