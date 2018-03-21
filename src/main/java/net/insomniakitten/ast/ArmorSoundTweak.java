@@ -1,18 +1,19 @@
 package net.insomniakitten.ast;
 
 import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -23,9 +24,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
-@Mod(modid = ArmorSoundTweak.ID, name = ArmorSoundTweak.NAME, version = ArmorSoundTweak.VERSION, acceptedMinecraftVersions = "[1.10,1.13)", clientSideOnly = true)
+@Mod(modid = ArmorSoundTweak.ID,
+     name = ArmorSoundTweak.NAME,
+     version = ArmorSoundTweak.VERSION,
+     acceptedMinecraftVersions = "[1.10,1.13)",
+     clientSideOnly = true)
 @Mod.EventBusSubscriber(Side.CLIENT)
 public final class ArmorSoundTweak {
 
@@ -39,8 +43,8 @@ public final class ArmorSoundTweak {
     @Mod.EventHandler
     public void onPostInit(FMLPostInitializationEvent event) {
         ResourceLocation id = new ResourceLocation("item.armor.equip_elytra");
-        soundElytraEquip = Optional.ofNullable(SoundEvent.REGISTRY.getObject(id))
-                .orElse(SoundEvents.ITEM_ARMOR_EQUIP_GENERIC);
+        SoundEvent sound = SoundEvent.REGISTRY.getObject(id);
+        soundElytraEquip = sound != null ? sound : SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
     }
 
     @SubscribeEvent
@@ -52,7 +56,7 @@ public final class ArmorSoundTweak {
             List<ItemStack> equipment = Lists.newArrayList();
 
             for (ItemStack stack : mc.player.getArmorInventoryList()) {
-                equipment.add(stack != null ? stack.copy() : stack);
+                equipment.add(stack != null ? stack.copy() : null);
             }
 
             if (mc.currentScreen != null && mc.currentScreen instanceof GuiContainer) {
@@ -78,23 +82,36 @@ public final class ArmorSoundTweak {
     }
 
     private static boolean isValidEquipment(ItemStack stack) {
-        return stack != null
-                && (stack.getItem() instanceof ItemArmor
-                || stack.getItem() instanceof ItemElytra);
+        if (stack == null) return false;
+
+        Item item = stack.getItem();
+
+        if (item == Items.SKULL) return true;
+        if (item instanceof ItemArmor) return true;
+        if (item instanceof ItemElytra) return true;
+        if (Block.getBlockFromItem(item) == Blocks.PUMPKIN) {
+            return true;
+        }
+
+        return false;
     }
 
     private static void playEquipSound(ItemStack stack, EntityPlayer player) {
         Item item = stack.getItem();
         SoundEvent sound = null;
 
-        if (item instanceof ItemArmor) {
+        if (item == Items.SKULL) {
+            sound = SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+        } else if (item instanceof ItemArmor) {
             sound = ((ItemArmor) item).getArmorMaterial().getSoundEvent();
         } else if (item instanceof ItemElytra) {
             sound = soundElytraEquip;
+        } else if (Block.getBlockFromItem(item) == Blocks.PUMPKIN) {
+            sound = SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
         }
 
         if (sound != null) {
-            player.world.playSound(player, new BlockPos(player), sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            player.playSound(sound, 1.0F, 1.0F);
         }
     }
 
