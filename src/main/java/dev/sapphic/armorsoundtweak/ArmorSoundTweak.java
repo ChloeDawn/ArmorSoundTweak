@@ -70,11 +70,7 @@ public final class ArmorSoundTweak {
                 } else if (this.elytra.get() && (item instanceof ElytraItem)) {
                   sound = SoundEvents.ITEM_ARMOR_EQUIP_ELYTRA;
                 } else if (!this.pumpkins.get() || (item != Blocks.CARVED_PUMPKIN.asItem())) {
-                  if ((
-                    !this.skulls.get() || (
-                      (item instanceof BlockItem) && !(((BlockItem) item).getBlock() instanceof AbstractSkullBlock)
-                    )
-                  ) && !this.anything.get()) {
+                  if ((!this.skulls.get() || !isSkull(item)) && !this.anything.get()) {
                     continue;
                   }
                 }
@@ -86,5 +82,9 @@ public final class ArmorSoundTweak {
         }
       }
     });
+  }
+
+  private static boolean isSkull(final Item item) {
+    return (item instanceof BlockItem) && (((BlockItem) item).getBlock() instanceof AbstractSkullBlock);
   }
 }
