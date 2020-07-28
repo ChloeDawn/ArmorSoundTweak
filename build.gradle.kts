@@ -37,7 +37,6 @@ tasks.withType<Jar> {
     "Implementation-Vendor" to project.group,
     "Implementation-Timestamp" to Instant.now().toString()
   ))
-  finalizedBy("reobfJar")
 }
 
 tasks.withType<JavaCompile> {
