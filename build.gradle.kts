@@ -1,8 +1,7 @@
 import java.time.Instant
-import org.gradle.jvm.tasks.Jar
 
 plugins {
-  id("net.minecraftforge.gradle") version "3.0.181"
+  id("fabric-loom") version "0.4.33"
   id("signing")
 }
 
@@ -14,23 +13,21 @@ java {
   targetCompatibility = sourceCompatibility
 }
 
-minecraft {
-  mappings("snapshot", "20200723-1.16.1")
-  runs {
-    with(create("client")) {
-      workingDirectory = file("run").canonicalPath
-      mods.create("armorsoundtweak").source(sourceSets["main"])
-    }
-  }
-}
-
 dependencies {
-  minecraft("net.minecraftforge:forge:1.16.1-32.0.93")
+  minecraft("com.mojang:minecraft:1.16.1")
+  mappings("net.fabricmc:yarn:1.16.1+build.21:v2")
+  modImplementation("net.fabricmc:fabric-loader:0.9.0+build.204")
+  modImplementation(include(fabricApi.module("fabric-api-base", "0.16.0+build.384-1.16.1"))!!)
+  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.16.0+build.384-1.16.1"))!!)
+  implementation(include("com.electronwill.night-config:core:3.6.3")!!)
+  implementation(include("com.electronwill.night-config:toml:3.6.3")!!)
   implementation("org.checkerframework:checker-qual:3.5.0")
 }
 
 tasks.withType<Jar> {
-  archiveClassifier.set("forge")
+  afterEvaluate {
+    archiveClassifier.set("fabric")
+  }
   manifest.attributes(mapOf(
     "Specification-Title" to project.name,
     "Specification-Vendor" to project.group,

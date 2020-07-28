@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "armorsoundtweak",
+  "name": "Armor Sound Tweak",
+  "version": "$version",
+  "description": "Plays the respective equip sound when (un)equipping armor in a menu",
+  "environment": "client",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.9.0",
+    "fabric-api-base": ">=0.1.3",
+    "fabric-lifecycle-events-v1": ">=1.1.0",
+    "minecraft": ">=1.16"
+  },
+  "entrypoints": {
+    "client": [
+      "dev.sapphic.armorsoundtweak.ArmorSoundTweak"
+    ]
+  },
+  "authors": [
+    {
+      "name": "Chloe Dawn",
+      "contact": {
+        "homepage": "https://sapphic.dev"
+      }
+    }
+  ],
+  "contact": {
+    "homepage": "https://git.io/JJuZP",
+    "sources": "https://git.io/JJuZP",
+    "issues": "https://git.io/JePYt"
+  }
+}
