@@ -1,9 +1,6 @@
 package dev.sapphic.armorsoundtweak;
 
-import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.ConfigSpec;
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.file.CommentedFileConfigBuilder;
 import com.electronwill.nightconfig.core.file.FileConfig;
 import com.electronwill.nightconfig.core.file.FileWatcher;
 import net.fabricmc.api.ClientModInitializer;
@@ -52,13 +49,9 @@ public final class ArmorSoundTweak implements ClientModInitializer {
     spec.define("sounds.anything", false);
     try {
       // No removal as config persists throughout entire runtime
-      FileWatcher.defaultInstance().addWatch(file, () -> {
-        // Correct file to specification on change
-        spec.correct(config);
-        config.save();
-      });
+      FileWatcher.defaultInstance().addWatch(file, () -> correct(config, spec));
     } catch (final IOException e) {
-      throw new IllegalStateException("Unable to correct config", e);
+      throw new IllegalStateException("Unable to add config correction watcher", e);
     }
     this.armor = () -> config.getOrElse("sounds.armor", true);
     this.elytra = () -> config.getOrElse("sounds.elytra", true);
@@ -66,9 +59,13 @@ public final class ArmorSoundTweak implements ClientModInitializer {
     this.pumpkins = () -> config.getOrElse("sounds.pumpkins", false);
     this.anything = () -> config.getOrElse("sounds.anything", false);
     config.load();
-    // Initial file correction/generation
-    // TODO Use default config file
-    spec.correct(config);
+    correct(config, spec);
+  }
+
+  private static void correct(final FileConfig config, final ConfigSpec spec) {
+    if (!spec.isCorrect(config)) {
+      spec.correct(config);
+    }
     config.save();
   }
 
