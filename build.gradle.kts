@@ -17,7 +17,7 @@ java {
 minecraft {
   mappings("snapshot", "20200723-1.16.1")
   runs {
-    with(create("client")) {
+    create("client") {
       workingDirectory = file("run").canonicalPath
       mods.create("armorsoundtweak").source(sourceSets["main"])
     }
