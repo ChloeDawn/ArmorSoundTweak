@@ -1,8 +1,8 @@
-import java.time.Instant
+import net.minecraftforge.gradle.common.task.SignJar
 import org.gradle.jvm.tasks.Jar
 
 plugins {
-  id("net.minecraftforge.gradle") version "3.0.181"
+  id("net.minecraftforge.gradle") version "3.0.189"
   id("signing")
 }
 
@@ -15,7 +15,7 @@ java {
 }
 
 minecraft {
-  mappings("snapshot", "20200723-1.16.1")
+  mappings("snapshot", "20201028-1.16.3")
   runs {
     create("client") {
       workingDirectory = file("run").canonicalPath
@@ -25,36 +25,51 @@ minecraft {
 }
 
 dependencies {
-  minecraft("net.minecraftforge:forge:1.16.1-32.0.93")
-  implementation("org.checkerframework:checker-qual:3.5.0")
+  minecraft("net.minecraftforge:forge:1.16.4-35.1.28")
+  implementation("org.checkerframework:checker-qual:3.8.0")
 }
 
-tasks.withType<Jar> {
-  archiveClassifier.set("forge")
-  manifest.attributes(mapOf(
-    "Specification-Title" to project.name,
-    "Specification-Vendor" to project.group,
-    "Specification-Version" to "24.0",
-    "Implementation-Title" to project.name,
-    "Implementation-Version" to 1,
-    "Implementation-Vendor" to project.group,
-    "Implementation-Timestamp" to Instant.now().toString()
-  ))
-  finalizedBy("reobfJar")
-}
+tasks {
+  compileJava {
+    with(options) {
+      isFork = true
+      isDeprecation = true
+      encoding = "UTF-8"
+      compilerArgs.addAll(listOf("-Xlint:all", "-parameters"))
+    }
+  }
 
-tasks.withType<JavaCompile> {
-  with(options) {
-    isFork = true
-    isDeprecation = true
-    encoding = "UTF-8"
-    compilerArgs.addAll(listOf(
-      "-Xlint:all", "-parameters"
+  jar {
+    archiveClassifier.set("forge")
+
+    manifest.attributes(mapOf(
+      "Specification-Title" to "MinecraftMod",
+      "Specification-Vendor" to project.group,
+      "Specification-Version" to "1.0.0",
+      "Implementation-Title" to project.name,
+      "Implementation-Version" to project.version,
+      "Implementation-Vendor" to project.group
     ))
+
+    finalizedBy("reobfJar")
+  }
+
+  create<SignJar>("signJar") {
+    dependsOn("reobfJar")
+
+    setAlias("${project.property("signing.mods.keyalias")}")
+    setKeyStore("${project.property("signing.mods.keystore")}")
+    setKeyPass("${project.property("signing.mods.password")}")
+    setStorePass("${project.property("signing.mods.password")}")
+    setInputFile(named<Jar>("jar").get().archiveFile.get())
+    setOutputFile(inputFile)
+  }
+
+  assemble {
+    dependsOn("signJar")
   }
 }
 
 signing {
-  useGpgCmd()
   sign(configurations.archives.get())
 }
