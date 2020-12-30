@@ -1,5 +1,4 @@
 import net.minecraftforge.gradle.common.task.SignJar
-import org.gradle.jvm.tasks.Jar
 
 plugins {
   id("net.minecraftforge.gradle") version "3.0.189"
@@ -42,6 +41,8 @@ tasks {
   jar {
     archiveClassifier.set("forge")
 
+    from("/LICENSE")
+
     manifest.attributes(mapOf(
       "Specification-Title" to "MinecraftMod",
       "Specification-Vendor" to project.group,
@@ -61,7 +62,7 @@ tasks {
     setKeyStore("${project.property("signing.mods.keystore")}")
     setKeyPass("${project.property("signing.mods.password")}")
     setStorePass("${project.property("signing.mods.password")}")
-    setInputFile(named<Jar>("jar").get().archiveFile.get())
+    setInputFile(jar.get().archiveFile.get())
     setOutputFile(inputFile)
   }
 
