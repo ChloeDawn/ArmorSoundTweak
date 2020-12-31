@@ -72,6 +72,7 @@ public final class ArmorSoundTweak implements ClientModInitializer {
     if (!spec.isCorrect(config)) {
       spec.correct(config);
     }
+
     config.save();
   }
 
@@ -81,6 +82,7 @@ public final class ArmorSoundTweak implements ClientModInitializer {
 
       return block instanceof AbstractSkullBlock;
     }
+
     return false;
   }
 
@@ -111,6 +113,7 @@ public final class ArmorSoundTweak implements ClientModInitializer {
             }
           }
         }
+
         this.oldEquipment = equipment;
       }
     });
