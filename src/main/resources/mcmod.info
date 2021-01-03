@@ -2,9 +2,11 @@
   {
     "modid": "armorsoundtweak",
     "name": "Armor Sound Tweak",
-    "description": "Plays the respective equipping sound when (un)equipping armor in a GUI",
-    "version": "${version}",
-    "mcversion": "[1.10,1.13)",
-    "authorList": [ "InsomniaKitten" ]
+    "description": "Plays the respective equip sound when (un)equipping armor in a menu",
+    "url": "https://git.io/JJuZP",
+    "version": "$version",
+    "authorList": [
+      "Chloe Dawn"
+    ]
   }
 ]
