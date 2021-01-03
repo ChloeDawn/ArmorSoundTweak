@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -98,7 +97,7 @@ public final class ArmorSoundTweak {
   }
 
   private @Nullable SoundEvent getEquipSound(final SubItem newItem, final SubItem oldItem) {
-    final Item item = ((newItem.item == Items.AIR) ? oldItem : newItem).item;
+    final Item item = (newItem.isEmpty() ? oldItem : newItem).item;
 
     if (SOUNDS.armor && (item instanceof ItemArmor)) {
       return ((ItemArmor) item).getArmorMaterial().getSoundEvent();
@@ -140,18 +139,22 @@ public final class ArmorSoundTweak {
   }
 
   private static final class SubItem {
-    private static final SubItem EMPTY = new SubItem(Items.AIR, 0);
+    private static final SubItem EMPTY = new SubItem(null, 0);
 
-    private final Item item;
+    private final @Nullable Item item;
     private final int metadata;
 
-    private SubItem(final Item item, final int metadata) {
+    private SubItem(final @Nullable Item item, final int metadata) {
       this.item = item;
       this.metadata = metadata;
     }
 
     private SubItem(final ItemStack stack) {
       this(stack.getItem(), stack.getMetadata());
+    }
+
+    private boolean isEmpty() {
+      return this.item == null;
     }
 
     private boolean is(final SubItem that) {
