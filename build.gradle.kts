@@ -1,12 +1,15 @@
+import org.gradle.util.GradleVersion
+import java.time.Instant
 import net.minecraftforge.gradle.common.task.SignJar
 
 plugins {
-  id("net.minecraftforge.gradle") version "3.0.189"
+  id("net.minecraftforge.gradle") version "3.0.190"
+  id("net.nemerosa.versioning") version "2.6.1"
   id("signing")
 }
 
 group = "dev.sapphic"
-version = "3.0.0"
+version = "3.1.0"
 
 java {
   sourceCompatibility = JavaVersion.VERSION_1_8
@@ -23,9 +26,18 @@ minecraft {
   }
 }
 
+repositories {
+  jcenter {
+    content {
+      includeGroup("me.shedaniel.cloth")
+    }
+  }
+}
+
 dependencies {
-  minecraft("net.minecraftforge:forge:1.16.4-35.1.28")
+  minecraft("net.minecraftforge:forge:1.16.4-35.1.37")
   implementation("org.checkerframework:checker-qual:3.8.0")
+  implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:4.1.3"))
 }
 
 tasks {
@@ -43,14 +55,26 @@ tasks {
 
     from("/LICENSE")
 
-    manifest.attributes(mapOf(
-      "Specification-Title" to "MinecraftMod",
-      "Specification-Vendor" to project.group,
-      "Specification-Version" to "1.0.0",
+    manifest.attributes(
+      "Build-Timestamp" to Instant.now(),
+      "Build-Revision" to versioning.info.commit,
+      "Build-Jvm" to "${
+        System.getProperty("java.version")
+      } (${
+        System.getProperty("java.vendor")
+      } ${
+        System.getProperty("java.vm.version")
+      })",
+      "Built-By" to GradleVersion.current(),
+
       "Implementation-Title" to project.name,
       "Implementation-Version" to project.version,
-      "Implementation-Vendor" to project.group
-    ))
+      "Implementation-Vendor" to project.group,
+
+      "Specification-Title" to "MinecraftMod",
+      "Specification-Version" to "1.1.0",
+      "Specification-Vendor" to project.group
+    )
 
     finalizedBy("reobfJar")
   }
