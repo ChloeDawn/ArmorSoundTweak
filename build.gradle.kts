@@ -93,6 +93,10 @@ tasks {
     finalizedBy("reobfJar")
   }
 
+  val sourcesJar by getting(Jar::class) {
+    archiveClassifier.set("forge-${archiveClassifier.get()}")
+  }
+
   if (project.hasProperty("signing.mods.keyalias")) {
     val keyalias = project.property("signing.mods.keyalias") as String
     val keystore = project.property("signing.mods.keystore") as String
@@ -114,8 +118,6 @@ tasks {
     }
 
     val signSourcesJar by creating(SignJar::class) {
-      val sourcesJar by getting(Jar::class)
-
       dependsOn(sourcesJar)
 
       alias.set(keyalias)
