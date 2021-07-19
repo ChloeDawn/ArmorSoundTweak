@@ -1,8 +1,8 @@
 package dev.sapphic.armorsoundtweak;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraftforge.event.TickEvent;
@@ -42,7 +42,7 @@ abstract class EquipmentTicker implements Consumer<TickEvent.ClientTickEvent> {
     }
   }
 
-  protected abstract List<Item> getEquipment(final ClientPlayerEntity player);
+  protected abstract List<Item> getEquipment(final PlayerEntity player);
 
-  protected abstract void playEquipSound(final ClientPlayerEntity player, final Item item);
+  protected abstract void playEquipSound(final PlayerEntity player, final Item item);
 }

@@ -1,6 +1,6 @@
 package dev.sapphic.armorsoundtweak;
 
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
@@ -31,13 +31,13 @@ final class CuriosTicker extends EquipmentTicker {
     });
   }
 
-  private static IItemHandler getEquippedCurios(final ClientPlayerEntity player) {
+  private static IItemHandler getEquippedCurios(final PlayerEntity player) {
     return CuriosApi.getCuriosHelper().getEquippedCurios(player)
       .orElse((IItemHandlerModifiable) EmptyHandler.INSTANCE);
   }
 
   @Override
-  protected List<Item> getEquipment(final ClientPlayerEntity player) {
+  protected List<Item> getEquipment(final PlayerEntity player) {
     final IItemHandler handler = getEquippedCurios(player);
 
     final List<Item> curios = new ArrayList<>(handler.getSlots());
@@ -50,7 +50,7 @@ final class CuriosTicker extends EquipmentTicker {
   }
 
   @Override
-  protected void playEquipSound(final ClientPlayerEntity player, final Item item) {
+  protected void playEquipSound(final PlayerEntity player, final Item item) {
     if (!ArmorSoundTweak.config().allowsCurios()) {
       return;
     }

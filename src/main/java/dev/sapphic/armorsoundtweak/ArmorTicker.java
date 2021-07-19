@@ -1,7 +1,7 @@
 package dev.sapphic.armorsoundtweak;
 
 import net.minecraft.block.AbstractSkullBlock;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ElytraItem;
@@ -29,7 +29,7 @@ final class ArmorTicker extends EquipmentTicker {
   }
 
   @Override
-  protected List<Item> getEquipment(final ClientPlayerEntity player) {
+  protected List<Item> getEquipment(final PlayerEntity player) {
     final List<Item> equipment = new ArrayList<>(4);
 
     for (ItemStack itemStack : player.getArmorInventoryList()) {
@@ -40,7 +40,7 @@ final class ArmorTicker extends EquipmentTicker {
   }
 
   @Override
-  protected void playEquipSound(final ClientPlayerEntity player, final Item item) {
+  protected void playEquipSound(final PlayerEntity player, final Item item) {
     if (!ArmorSoundTweak.config().allowsArmor()) {
       return;
     }
