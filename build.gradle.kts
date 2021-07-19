@@ -18,12 +18,10 @@ minecraft {
   mappings("snapshot", "20210309-1.16.5")
   runs {
     create("client") {
-      workingDirectory = file("run").canonicalPath
       mods.create("armorsoundtweak").source(sourceSets["main"])
       property("forge.logging.console.level", "debug")
     }
     create("server") {
-      workingDirectory = file("run").canonicalPath
       mods.create("armorsoundtweak").source(sourceSets["main"])
       property("forge.logging.console.level", "debug")
     }
