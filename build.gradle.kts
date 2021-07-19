@@ -1,10 +1,9 @@
-import org.gradle.util.GradleVersion
 import java.time.Instant
-import net.minecraftforge.gradle.common.task.SignJar
+import net.minecraftforge.gradle.common.tasks.SignJar
 
 plugins {
-  id("net.minecraftforge.gradle") version "3.0.190"
-  id("net.nemerosa.versioning") version "2.6.1"
+  id("net.minecraftforge.gradle") version "5.0.37"
+  id("net.nemerosa.versioning") version "be24b23"
   id("signing")
 }
 
@@ -12,37 +11,50 @@ group = "dev.sapphic"
 version = "3.1.0"
 
 java {
-  sourceCompatibility = JavaVersion.VERSION_1_8
-  targetCompatibility = sourceCompatibility
+  withSourcesJar()
 }
 
 minecraft {
-  mappings("snapshot", "20201028-1.16.3")
+  mappings("snapshot", "20210309-1.16.5")
   runs {
     create("client") {
       workingDirectory = file("run").canonicalPath
       mods.create("armorsoundtweak").source(sourceSets["main"])
+      property("forge.logging.console.level", "debug")
+    }
+    create("server") {
+      workingDirectory = file("run").canonicalPath
+      mods.create("armorsoundtweak").source(sourceSets["main"])
+      property("forge.logging.console.level", "debug")
     }
   }
 }
 
 repositories {
-  jcenter {
+  maven("https://maven.shedaniel.me") {
     content {
       includeGroup("me.shedaniel.cloth")
+    }
+  }
+  maven("https://maven.theillusivec4.top") {
+    content {
+      includeGroup("top.theillusivec4.curios")
     }
   }
 }
 
 dependencies {
-  minecraft("net.minecraftforge:forge:1.16.4-35.1.37")
-  implementation("org.checkerframework:checker-qual:3.8.0")
-  implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:4.1.3"))
+  minecraft("net.minecraftforge:forge:1.16.5-36.1.62")
+  implementation("org.checkerframework:checker-qual:3.15.0")
+  implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:4.11.26"))
+  runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2"))
+  compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2:api"))
 }
 
 tasks {
   compileJava {
     with(options) {
+      release.set(8)
       isFork = true
       isDeprecation = true
       encoding = "UTF-8"
@@ -72,29 +84,54 @@ tasks {
       "Implementation-Vendor" to project.group,
 
       "Specification-Title" to "ForgeMod",
-      "Specification-Version" to "1.0.0",
-      "Specification-Vendor" to project.group
+      "Specification-Version" to "1.1.0",
+      "Specification-Vendor" to project.group,
+
+      "Sealed" to true
     )
 
     finalizedBy("reobfJar")
   }
 
-  create<SignJar>("signJar") {
-    dependsOn("reobfJar")
+  if (project.hasProperty("signing.mods.keyalias")) {
+    val keyalias = project.property("signing.mods.keyalias") as String
+    val keystore = project.property("signing.mods.keystore") as String
+    val password = project.property("signing.mods.password") as String
 
-    setAlias("${project.property("signing.mods.keyalias")}")
-    setKeyStore("${project.property("signing.mods.keystore")}")
-    setKeyPass("${project.property("signing.mods.password")}")
-    setStorePass("${project.property("signing.mods.password")}")
-    setInputFile(jar.get().archiveFile.get())
-    setOutputFile(inputFile)
+    val signJar by creating(SignJar::class) {
+      dependsOn(reobf)
+
+      alias.set(keyalias)
+      keyStore.set(keystore)
+      keyPass.set(password)
+      storePass.set(password)
+      inputFile.set(jar.get().archiveFile)
+      outputFile.set(inputFile)
+
+      doLast {
+        signing.sign(outputFile.get().asFile)
+      }
+    }
+
+    val signSourcesJar by creating(SignJar::class) {
+      val sourcesJar by getting(Jar::class)
+
+      dependsOn(sourcesJar)
+
+      alias.set(keyalias)
+      keyStore.set(keystore)
+      keyPass.set(password)
+      storePass.set(password)
+      inputFile.set(sourcesJar.archiveFile)
+      outputFile.set(inputFile)
+
+      doLast {
+        signing.sign(outputFile.get().asFile)
+      }
+    }
+
+    assemble {
+      dependsOn(signJar, signSourcesJar)
+    }
   }
-
-  assemble {
-    dependsOn("signJar")
-  }
-}
-
-signing {
-  sign(configurations.archives.get())
 }
