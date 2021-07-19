@@ -24,5 +24,5 @@ side = "CLIENT"
 [[dependencies.armorsoundtweak]]
 modId = "curios"
 mandatory = false
-versionRange = "[1.16.5-4.0,)"
+versionRange = "[1.16.4-4.0.4.0,)"
 side = "CLIENT"
