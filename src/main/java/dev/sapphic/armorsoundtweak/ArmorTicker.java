@@ -32,8 +32,8 @@ final class ArmorTicker extends EquipmentTicker {
   protected List<Item> getEquipment(final PlayerEntity player) {
     final List<Item> equipment = new ArrayList<>(4);
 
-    for (ItemStack itemStack : player.getArmorInventoryList()) {
-      equipment.add(itemStack.getItem());
+    for (final ItemStack stack : player.getArmorInventoryList()) {
+      equipment.add(stack.getItem());
     }
 
     return equipment;

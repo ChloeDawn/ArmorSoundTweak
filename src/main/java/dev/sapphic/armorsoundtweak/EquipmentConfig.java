@@ -7,7 +7,6 @@ import me.shedaniel.clothconfig2.forge.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.forge.gui.entries.BooleanListEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
@@ -116,8 +115,9 @@ public final class EquipmentConfig {
     }
 
     private static BooleanListEntry bool(final ConfigEntryBuilder builder, final String name, final BooleanValue value, final boolean defaultValue) {
-      final ITextComponent label = new TranslationTextComponent(ArmorSoundTweak.MOD_ID + ".config." + name);
-      return builder.startBooleanToggle(label, value.get()).setSaveConsumer(value::set).setDefaultValue(defaultValue).build();
+      return builder.startBooleanToggle(
+        new TranslationTextComponent(ArmorSoundTweak.MOD_ID + ".config." + name), value.get()
+      ).setSaveConsumer(value::set).setDefaultValue(defaultValue).build();
     }
 
     @Override
