@@ -9,6 +9,10 @@ plugins {
 group = "dev.sapphic"
 version = "3.1.0"
 
+java {
+  withSourcesJar()
+}
+
 dependencies {
   minecraft("com.mojang:minecraft:1.16.5")
   mappings(loom.officialMojangMappings())
