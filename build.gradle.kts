@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "dev.sapphic"
-version = "3.0.0"
+version = "3.1.0"
 
 dependencies {
   minecraft("com.mojang:minecraft:1.16.5")
