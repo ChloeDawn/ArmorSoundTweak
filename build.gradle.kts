@@ -1,5 +1,8 @@
+import java.time.Instant
+
 plugins {
-  id("fabric-loom") version "0.5.43"
+  id("fabric-loom") version "0.8.21"
+  id("net.nemerosa.versioning") version "be24b23"
   id("signing")
 }
 
@@ -7,20 +10,20 @@ group = "dev.sapphic"
 version = "3.0.0"
 
 dependencies {
-  minecraft("com.mojang:minecraft:1.16.4")
-  mappings(minecraft.officialMojangMappings())
-  modImplementation("net.fabricmc:fabric-loader:0.10.8")
-  modImplementation(include("net.fabricmc.fabric-api:fabric-api-base:0.2.0+ab87788d3a")!!)
-  modImplementation(include("net.fabricmc.fabric-api:fabric-lifecycle-events-v1:1.2.0+ffb68a873a")!!)
+  minecraft("com.mojang:minecraft:1.16.5")
+  mappings(loom.officialMojangMappings())
+  modImplementation("net.fabricmc:fabric-loader:0.11.6")
+  modImplementation(include(fabricApi.module("fabric-api-base", "0.37.0+1.16"))!!)
+  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.37.0+1.16"))!!)
   implementation(include("com.electronwill.night-config:core:3.6.3")!!)
   implementation(include("com.electronwill.night-config:toml:3.6.3")!!)
-  implementation("org.checkerframework:checker-qual:3.8.0")
+  implementation("org.checkerframework:checker-qual:3.15.0")
 }
 
 tasks {
   compileJava {
     with(options) {
-      options.release.set(8)
+      release.set(8)
       isFork = true
       isDeprecation = true
       encoding = "UTF-8"
@@ -35,23 +38,60 @@ tasks {
   }
 
   jar {
-    // FIXME Loom does not respect this
-    archiveClassifier.set("fabric")
-
     from("/LICENSE")
 
-    manifest.attributes(mapOf(
-      "Specification-Title" to "MinecraftMod",
-      "Specification-Vendor" to project.group,
-      "Specification-Version" to "1.0.0",
+    manifest.attributes(
+      "Build-Timestamp" to Instant.now(),
+      "Build-Revision" to versioning.info.commit,
+      "Build-Jvm" to "${
+        System.getProperty("java.version")
+      } (${
+        System.getProperty("java.vendor")
+      } ${
+        System.getProperty("java.vm.version")
+      })",
+      "Built-By" to GradleVersion.current(),
+
       "Implementation-Title" to project.name,
       "Implementation-Version" to project.version,
       "Implementation-Vendor" to project.group,
+
+      "Specification-Title" to "FabricMod",
+      "Specification-Version" to "1.0.0",
+      "Specification-Vendor" to project.group,
+
       "Sealed" to "true"
-    ))
+    )
+  }
+
+  assemble {
+    dependsOn(versionFile)
   }
 }
 
-signing {
-  sign(configurations.archives.get())
+if (hasProperty("signing.mods.keyalias")) {
+  val alias = property("signing.mods.keyalias")
+  val keystore = property("signing.mods.keystore")
+  val password = property("signing.mods.password")
+
+  listOf(tasks.remapJar, tasks.remapSourcesJar).forEach {
+    it.get().doLast {
+      if (!project.file(keystore!!).exists()) {
+        error("Missing keystore $keystore")
+      }
+
+      val file = outputs.files.singleFile
+      ant.invokeMethod(
+        "signjar", mapOf(
+        "jar" to file,
+        "alias" to alias,
+        "storepass" to password,
+        "keystore" to keystore,
+        "verbose" to true,
+        "preservelastmodified" to true
+      )
+      )
+      signing.sign(file)
+    }
+  }
 }

@@ -19,7 +19,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.AbstractSkullBlock;
-import net.minecraft.world.level.block.Block;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
@@ -45,11 +44,17 @@ public final class ArmorSoundTweak implements ClientModInitializer {
     final FileConfig config = FileConfig.builder(file).autoreload().build();
     final ConfigSpec spec = new ConfigSpec();
 
-    spec.define("sounds.armor", true);
-    spec.define("sounds.elytra", true);
-    spec.define("sounds.skulls", false);
-    spec.define("sounds.pumpkins", false);
-    spec.define("sounds.anything", false);
+    final String armor = "sounds.armor";
+    final String elytra = "sounds.elytra";
+    final String skulls = "sounds.skulls";
+    final String pumpkins = "sounds.pumpkins";
+    final String anything = "sounds.anything";
+
+    spec.define(armor, true);
+    spec.define(elytra, true);
+    spec.define(skulls, false);
+    spec.define(pumpkins, false);
+    spec.define(anything, false);
 
     try {
       // No removal as config persists throughout entire runtime
@@ -58,11 +63,11 @@ public final class ArmorSoundTweak implements ClientModInitializer {
       throw new IllegalStateException("Unable to add config correction watcher", e);
     }
 
-    this.armor = () -> config.getOrElse("sounds.armor", true);
-    this.elytra = () -> config.getOrElse("sounds.elytra", true);
-    this.skulls = () -> config.getOrElse("sounds.skulls", false);
-    this.pumpkins = () -> config.getOrElse("sounds.pumpkins", false);
-    this.anything = () -> config.getOrElse("sounds.anything", false);
+    this.armor = () -> config.getOrElse(armor, true);
+    this.elytra = () -> config.getOrElse(elytra, true);
+    this.skulls = () -> config.getOrElse(skulls, false);
+    this.pumpkins = () -> config.getOrElse(pumpkins, false);
+    this.anything = () -> config.getOrElse(anything, false);
 
     config.load();
     correct(config, spec);
@@ -77,13 +82,7 @@ public final class ArmorSoundTweak implements ClientModInitializer {
   }
 
   private static boolean isSkull(final Item item) {
-    if (item instanceof BlockItem) {
-      final Block block = ((BlockItem) item).getBlock();
-
-      return block instanceof AbstractSkullBlock;
-    }
-
-    return false;
+    return item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof AbstractSkullBlock;
   }
 
   @Override
