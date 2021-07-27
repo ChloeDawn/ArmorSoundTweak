@@ -9,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.nbt.Tag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
@@ -37,7 +39,7 @@ public final class ArmorSoundTweak implements ClientModInitializer {
   private final Supplier<Boolean> pumpkins;
   private final Supplier<Boolean> anything;
 
-  private List<Item> oldEquipment = Collections.emptyList();
+  private List<ItemWithTag> oldEquipment = Collections.emptyList();
 
   public ArmorSoundTweak() {
     final Path file = FabricLoader.getInstance().getConfigDir().resolve("armorsoundtweak.toml");
@@ -82,29 +84,29 @@ public final class ArmorSoundTweak implements ClientModInitializer {
   }
 
   private static boolean isSkull(final Item item) {
-    return item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof AbstractSkullBlock;
+    return (item instanceof BlockItem) && (((BlockItem) item).getBlock() instanceof AbstractSkullBlock);
   }
 
   @Override
   public void onInitializeClient() {
     ClientTickEvents.START_CLIENT_TICK.register(client -> {
       if ((client.player != null) && (client.player.level != null) && client.player.level.isClientSide) {
-        final List<Item> equipment = new ArrayList<>(4);
+        final List<ItemWithTag> equipment = new ArrayList<>(4);
 
         for (final ItemStack stack : client.player.getArmorSlots()) {
-          equipment.add(stack.getItem());
+          equipment.add(new ItemWithTag(stack));
         }
 
         if (client.screen instanceof AbstractContainerScreen<?>) {
-          final Iterator<Item> newEquipment = equipment.iterator();
-          final Iterator<Item> oldEquipment = this.oldEquipment.iterator();
+          final Iterator<ItemWithTag> newEquipment = equipment.iterator();
+          final Iterator<ItemWithTag> oldEquipment = this.oldEquipment.iterator();
 
           while (oldEquipment.hasNext() && newEquipment.hasNext()) {
-            final Item newItem = newEquipment.next();
-            final Item oldItem = oldEquipment.next();
+            final ItemWithTag newItem = newEquipment.next();
+            final ItemWithTag oldItem = oldEquipment.next();
 
-            if (newItem != oldItem) {
-              final @Nullable SoundEvent sound = this.getEquipSound(newItem, oldItem);
+            if (!newItem.equals(oldItem)) {
+              final @Nullable SoundEvent sound = this.getEquipSound(newItem.item, oldItem.item);
 
               if (sound != null) {
                 client.player.playNotifySound(sound, SoundSource.NEUTRAL, 1.0F, 1.0F);
@@ -138,5 +140,45 @@ public final class ArmorSoundTweak implements ClientModInitializer {
     }
 
     return null;
+  }
+
+  private static final class ItemWithTag {
+    private final Item item;
+    private final @Nullable Tag tag;
+
+    private ItemWithTag(final ItemStack stack) {
+      this.item = stack.getItem();
+      this.tag = stack.getTag();
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+      if (this == o) {
+        return true;
+      }
+
+      if ((o == null) || (this.getClass() != o.getClass())) {
+        return false;
+      }
+
+      final ItemWithTag that = (ItemWithTag) o;
+
+      return this.item.equals(that.item) && Objects.equals(this.tag, that.tag);
+    }
+
+    @Override
+    public int hashCode() {
+      int result = 1;
+
+      result = (31 * result) + this.item.hashCode();
+      result = (31 * result) + Objects.hashCode(this.tag);
+
+      return result;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(this.item) + this.tag;
+    }
   }
 }
