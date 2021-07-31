@@ -12,13 +12,13 @@ description = """Plays the respective equip sound when (un)equipping armor in a 
 [[dependencies.armorsoundtweak]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.14,1.17)"
+versionRange = "[1.16,1.17)"
 side = "CLIENT"
 
 [[dependencies.armorsoundtweak]]
 modId = "forge"
 mandatory = true
-versionRange = "[28,)"
+versionRange = "[36,)"
 side = "CLIENT"
 
 [[dependencies.armorsoundtweak]]
