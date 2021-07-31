@@ -17,8 +17,8 @@ dependencies {
   minecraft("com.mojang:minecraft:1.16.5")
   mappings(loom.officialMojangMappings())
   modImplementation("net.fabricmc:fabric-loader:0.11.6")
-  modImplementation(include(fabricApi.module("fabric-api-base", "0.37.0+1.16"))!!)
-  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.37.0+1.16"))!!)
+  modImplementation(include(fabricApi.module("fabric-api-base", "0.37.1+1.16"))!!)
+  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.37.1+1.16"))!!)
   implementation(include("com.electronwill.night-config:core:3.6.3")!!)
   implementation(include("com.electronwill.night-config:toml:3.6.3")!!)
   implementation("org.checkerframework:checker-qual:3.15.0")
@@ -68,8 +68,19 @@ tasks {
     )
   }
 
+  with(getByName<Jar>("sourcesJar")) {
+    archiveClassifier.set("fabric-${archiveClassifier.get()}")
+  }
+
   assemble {
     dependsOn(versionFile)
+  }
+}
+
+afterEvaluate {
+  // FIXME https://github.com/FabricMC/fabric-loom/issues/452
+  tasks.remapJar {
+    archiveClassifier.set("fabric")
   }
 }
 
