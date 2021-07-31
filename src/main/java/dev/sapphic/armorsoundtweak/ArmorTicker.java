@@ -25,15 +25,15 @@ final class ArmorTicker extends EquipmentTicker {
   }
 
   private static boolean isSkull(final Item item) {
-    return item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof AbstractSkullBlock;
+    return (item instanceof BlockItem) && (((BlockItem) item).getBlock() instanceof AbstractSkullBlock);
   }
 
   @Override
-  protected List<Item> getEquipment(final PlayerEntity player) {
-    final List<Item> equipment = new ArrayList<>(4);
+  protected List<ItemStack> getEquipment(final PlayerEntity player) {
+    final List<ItemStack> equipment = new ArrayList<>(4);
 
     for (final ItemStack stack : player.getArmorInventoryList()) {
-      equipment.add(stack.getItem());
+      equipment.add(stack.copy());
     }
 
     return equipment;

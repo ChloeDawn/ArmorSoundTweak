@@ -37,12 +37,12 @@ final class CuriosTicker extends EquipmentTicker {
   }
 
   @Override
-  protected List<Item> getEquipment(final PlayerEntity player) {
+  protected List<ItemStack> getEquipment(final PlayerEntity player) {
     final IItemHandler handler = getEquippedCurios(player);
-    final List<Item> curios = new ArrayList<>(handler.getSlots());
+    final List<ItemStack> curios = new ArrayList<>(handler.getSlots());
 
     for (int slot = 0; slot < handler.getSlots(); slot++) {
-      curios.add(handler.getStackInSlot(slot).getItem());
+      curios.add(handler.getStackInSlot(slot).copy());
     }
 
     return curios;

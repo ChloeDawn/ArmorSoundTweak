@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 abstract class EquipmentTicker implements Consumer<TickEvent.ClientTickEvent> {
-  private List<Item> oldEquipment = Collections.emptyList();
+  private List<ItemStack> oldEquipment = Collections.emptyList();
 
   @Override
   public void accept(final TickEvent.ClientTickEvent event) {
@@ -21,18 +21,18 @@ abstract class EquipmentTicker implements Consumer<TickEvent.ClientTickEvent> {
 
     if ((event.phase == TickEvent.Phase.START) && (client.player != null)) {
       if ((client.player.world != null) && client.player.world.isRemote) {
-        final List<Item> equipment = this.getEquipment(client.player);
+        final List<ItemStack> equipment = this.getEquipment(client.player);
 
         if (client.currentScreen instanceof ContainerScreen<?>) {
-          final Iterator<Item> newEquipment = equipment.iterator();
-          final Iterator<Item> oldEquipment = this.oldEquipment.iterator();
+          final Iterator<ItemStack> newEquipment = equipment.iterator();
+          final Iterator<ItemStack> oldEquipment = this.oldEquipment.iterator();
 
           while (oldEquipment.hasNext() && newEquipment.hasNext()) {
-            final Item newItem = newEquipment.next();
-            final Item oldItem = oldEquipment.next();
+            final ItemStack newItem = newEquipment.next();
+            final ItemStack oldItem = oldEquipment.next();
 
-            if (newItem != oldItem) {
-              this.playEquipSound(client.player, (newItem == Items.AIR) ? oldItem : newItem);
+            if (!ItemStack.areItemStacksEqual(newItem, oldItem)) {
+              this.playEquipSound(client.player, (newItem.isEmpty() ? oldItem : newItem).getItem());
             }
           }
         }
@@ -42,7 +42,7 @@ abstract class EquipmentTicker implements Consumer<TickEvent.ClientTickEvent> {
     }
   }
 
-  protected abstract List<Item> getEquipment(final PlayerEntity player);
+  protected abstract List<ItemStack> getEquipment(final PlayerEntity player);
 
   protected abstract void playEquipSound(final PlayerEntity player, final Item item);
 }
