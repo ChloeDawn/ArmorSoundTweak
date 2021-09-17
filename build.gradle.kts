@@ -1,8 +1,8 @@
 import java.time.Instant
 
 plugins {
-  id("fabric-loom") version "0.8.21"
-  id("net.nemerosa.versioning") version "be24b23"
+  id("fabric-loom") version "0.8.22"
+  id("net.nemerosa.versioning") version "2.15.0"
   id("signing")
 }
 
@@ -16,12 +16,12 @@ java {
 dependencies {
   minecraft("com.mojang:minecraft:1.16.5")
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc:fabric-loader:0.11.6")
-  modImplementation(include(fabricApi.module("fabric-api-base", "0.37.1+1.16"))!!)
-  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.37.1+1.16"))!!)
-  implementation(include("com.electronwill.night-config:core:3.6.3")!!)
-  implementation(include("com.electronwill.night-config:toml:3.6.3")!!)
-  implementation("org.checkerframework:checker-qual:3.15.0")
+  modImplementation("net.fabricmc:fabric-loader:0.11.7")
+  modImplementation(include(fabricApi.module("fabric-api-base", "0.40.1+1.16"))!!)
+  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.40.1+1.16"))!!)
+  implementation(include("com.electronwill.night-config:core:3.6.4")!!)
+  implementation(include("com.electronwill.night-config:toml:3.6.4")!!)
+  implementation("org.checkerframework:checker-qual:3.18.0")
 }
 
 tasks {
