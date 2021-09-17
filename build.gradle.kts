@@ -3,7 +3,7 @@ import net.minecraftforge.gradle.common.tasks.SignJar
 
 plugins {
   id("net.minecraftforge.gradle") version "5.1.16"
-  id("net.nemerosa.versioning") version "be24b23"
+  id("net.nemerosa.versioning") version "2.15.0"
   id("signing")
 }
 
@@ -29,6 +29,7 @@ minecraft {
 }
 
 repositories {
+  mavenCentral()
   maven("https://maven.shedaniel.me") {
     content {
       includeGroup("me.shedaniel.cloth")
@@ -42,11 +43,11 @@ repositories {
 }
 
 dependencies {
-  minecraft("net.minecraftforge:forge:1.16.5-36.2.2")
-  implementation("org.checkerframework:checker-qual:3.15.0")
+  minecraft("net.minecraftforge:forge:1.16.5-36.2.4")
+  implementation("org.checkerframework:checker-qual:3.18.0")
   implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:4.11.26"))
-  runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2"))
-  compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.2:api"))
+  runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.3"))
+  compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.3:api"))
 }
 
 tasks {
