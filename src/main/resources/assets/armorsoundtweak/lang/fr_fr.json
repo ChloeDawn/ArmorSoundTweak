@@ -1,0 +1,12 @@
+{
+  "armorsoundtweak.config": "Armor Sound Tweak",
+  "armorsoundtweak.config.slots": "Type d'emplacements",
+  "armorsoundtweak.config.slots.curios": "Emplacements de Curios",
+  "armorsoundtweak.config.slots.armor": "Emplacements d'armures",
+  "armorsoundtweak.config.sounds": "Type de sons",
+  "armorsoundtweak.config.sounds.armor": "Sons des armures",
+  "armorsoundtweak.config.sounds.elytra": "Sons des élytres",
+  "armorsoundtweak.config.sounds.skulls": "Sons des crânes",
+  "armorsoundtweak.config.sounds.pumpkins": "Sons des citrouilles",
+  "armorsoundtweak.config.sounds.anything": "Sons génériques"
+}
