@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "dev.sapphic"
-version = "3.1.1"
+version = "3.1.2"
 
 java {
   withSourcesJar()
@@ -43,8 +43,8 @@ repositories {
 }
 
 dependencies {
-  minecraft("net.minecraftforge:forge:1.16.5-36.2.4")
-  implementation("org.checkerframework:checker-qual:3.18.0")
+  minecraft("net.minecraftforge:forge:1.16.5-36.2.8")
+  implementation("org.checkerframework:checker-qual:3.18.1")
   implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:4.11.26"))
   runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.3"))
   compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.3:api"))
