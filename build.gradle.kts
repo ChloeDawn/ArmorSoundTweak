@@ -2,7 +2,7 @@ import java.time.Instant
 import net.minecraftforge.gradle.common.tasks.SignJar
 
 plugins {
-  id("net.minecraftforge.gradle") version "5.1.16"
+  id("net.minecraftforge.gradle") version "5.1.23"
   id("net.nemerosa.versioning") version "2.15.0"
   id("signing")
 }
@@ -17,13 +17,12 @@ java {
 minecraft {
   mappings("snapshot", "20210309-1.16.5")
   runs {
-    create("client") {
-      mods.create("armorsoundtweak").source(sourceSets["main"])
-      property("forge.logging.console.level", "debug")
-    }
-    create("server") {
-      mods.create("armorsoundtweak").source(sourceSets["main"])
-      property("forge.logging.console.level", "debug")
+    listOf("client", "server").forEach {
+      create(it) {
+        mods.create("armorsoundtweak").source(sourceSets["main"])
+        property("forge.logging.console.level", "debug")
+        property("forge.logging.markers", "SCAN")
+      }
     }
   }
 }
