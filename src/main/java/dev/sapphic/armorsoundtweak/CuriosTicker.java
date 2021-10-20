@@ -9,15 +9,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.EmptyHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.ArrayList;
 
 final class CuriosTicker extends EquipmentTicker {
-  private static final Logger LOGGER = LogManager.getLogger();
-
   static void register() {
     MinecraftForge.EVENT_BUS.addListener(new CuriosTicker());
   }
