@@ -1,47 +1,38 @@
 package dev.sapphic.armorsoundtweak;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.EmptyHandler;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.SlotTypeMessage;
-import top.theillusivec4.curios.api.SlotTypePreset;
-import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import java.util.ArrayList;
-import java.util.List;
 
 final class CuriosTicker extends EquipmentTicker {
+  private static final Logger LOGGER = LogManager.getLogger();
+
   static void register() {
     MinecraftForge.EVENT_BUS.addListener(new CuriosTicker());
   }
 
-  static void sendIdeImc() {
-    InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> {
-      return SlotTypePreset.RING.getMessageBuilder().build();
-    });
-  }
-
-  private static IItemHandler getEquippedCurios(final PlayerEntity player) {
+  private static IItemHandler getEquippedCurios(final Player player) {
     return CuriosApi.getCuriosHelper().getEquippedCurios(player)
       .orElse((IItemHandlerModifiable) EmptyHandler.INSTANCE);
   }
 
   @Override
-  protected List<ItemStack> getEquipment(final PlayerEntity player) {
-    final IItemHandler handler = getEquippedCurios(player);
-    final List<ItemStack> curios = new ArrayList<>(handler.getSlots());
+  protected Iterable<ItemStack> getEquipment(final Player player) {
+    final var handler = getEquippedCurios(player);
+    final var curios = new ArrayList<ItemStack>(handler.getSlots());
 
-    for (int slot = 0; slot < handler.getSlots(); slot++) {
+    for (var slot = 0; slot < handler.getSlots(); ++slot) {
       curios.add(handler.getStackInSlot(slot).copy());
     }
 
@@ -49,20 +40,14 @@ final class CuriosTicker extends EquipmentTicker {
   }
 
   @Override
-  protected void playEquipSound(final PlayerEntity player, final Item item) {
+  protected void playEquipSound(final Player player, final Item item) {
     if (!ArmorSoundTweak.config().allowsCurios()) {
       return;
     }
 
-    final ICurio.@Nullable SoundInfo sound = CuriosApi.getCuriosHelper()
-      .getCurio(new ItemStack(item))
-      .map(o -> o.getEquipSound(new SlotContext("", player)))
-      .orElse(null);
-
-    if (sound != null) {
-      player.playSound(sound.getSoundEvent(), SoundCategory.NEUTRAL, sound.getVolume(), sound.getPitch());
-    } else {
-      player.playSound(SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, SoundCategory.NEUTRAL, 1.0F, 1.0F);
-    }
+    CuriosApi.getCuriosHelper().getCurio(new ItemStack(item))
+      .map(curio -> curio.getEquipSound(null)).ifPresentOrElse(sound -> {
+        player.playNotifySound(sound.soundEvent(), SoundSource.NEUTRAL, sound.volume(), sound.pitch());
+      }, () -> player.playNotifySound(SoundEvents.ARMOR_EQUIP_GENERIC, SoundSource.NEUTRAL, 1.0F, 1.0F));
   }
 }

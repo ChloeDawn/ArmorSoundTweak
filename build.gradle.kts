@@ -8,14 +8,14 @@ plugins {
 }
 
 group = "dev.sapphic"
-version = "3.1.2"
+version = "4.0.0"
 
 java {
   withSourcesJar()
 }
 
 minecraft {
-  mappings("snapshot", "20210309-1.16.5")
+  mappings("official", "1.17.1")
   runs {
     listOf("client", "server").forEach {
       create(it) {
@@ -39,20 +39,29 @@ repositories {
       includeGroup("top.theillusivec4.curios")
     }
   }
+  maven("https://cursemaven.com") {
+    content {
+      includeGroup("curse.maven")
+    }
+  }
 }
 
 dependencies {
-  minecraft("net.minecraftforge:forge:1.16.5-36.2.8")
+  minecraft("net.minecraftforge:forge:1.17.1-37.0.103")
   implementation("org.checkerframework:checker-qual:3.18.1")
-  implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:4.11.26"))
-  runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.3"))
-  compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.5.3:api"))
+  implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38"))
+  runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.1.0"))
+  compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.1.0:api"))
+
+  // Curios' debug items were removed in 1.17 so we use this for testing
+  // https://www.curseforge.com/minecraft/mc-mods/curio-of-undying/files/3475293
+  runtimeOnly(fg.deobf("curse.maven:curio-of-undying-316873:3475293"))
 }
 
 tasks {
   compileJava {
     with(options) {
-      release.set(8)
+      release.set(16)
       isFork = true
       isDeprecation = true
       encoding = "UTF-8"

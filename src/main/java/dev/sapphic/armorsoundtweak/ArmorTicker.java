@@ -1,21 +1,21 @@
 package dev.sapphic.armorsoundtweak;
 
-import net.minecraft.block.AbstractSkullBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ElytraItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import com.google.common.collect.Iterables;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ElytraItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.AbstractSkullBlock;
 import net.minecraftforge.common.MinecraftForge;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 final class ArmorTicker extends EquipmentTicker {
   private final EquipmentConfig.Sounds sounds = ArmorSoundTweak.config().sounds();
@@ -29,10 +29,10 @@ final class ArmorTicker extends EquipmentTicker {
   }
 
   @Override
-  protected List<ItemStack> getEquipment(final PlayerEntity player) {
-    final List<ItemStack> equipment = new ArrayList<>(4);
+  protected Iterable<ItemStack> getEquipment(final Player player) {
+    final var equipment = new ArrayList<ItemStack>(4);
 
-    for (final ItemStack stack : player.getArmorInventoryList()) {
+    for (final var stack : player.getArmorSlots()) {
       equipment.add(stack.copy());
     }
 
@@ -40,7 +40,7 @@ final class ArmorTicker extends EquipmentTicker {
   }
 
   @Override
-  protected void playEquipSound(final PlayerEntity player, final Item item) {
+  protected void playEquipSound(final Player player, final Item item) {
     if (!ArmorSoundTweak.config().allowsArmor()) {
       return;
     }
@@ -48,29 +48,29 @@ final class ArmorTicker extends EquipmentTicker {
     final @Nullable SoundEvent sound = this.getEquipSound(item);
 
     if (sound != null) {
-      player.playSound(sound, SoundCategory.NEUTRAL, 1.0F, 1.0F);
+      player.playNotifySound(sound, SoundSource.NEUTRAL, 1.0F, 1.0F);
     }
   }
 
   private @Nullable SoundEvent getEquipSound(final Item item) {
     if (this.sounds.hasArmor() && (item instanceof ArmorItem)) {
-      return ((ArmorItem) item).getArmorMaterial().getSoundEvent();
+      return ((ArmorItem) item).getMaterial().getEquipSound();
     }
 
     if (this.sounds.hasElytra() && (item instanceof ElytraItem)) {
-      return SoundEvents.ITEM_ARMOR_EQUIP_ELYTRA;
+      return SoundEvents.ARMOR_EQUIP_ELYTRA;
     }
 
     if (this.sounds.hasPumpkins() && (item == Items.CARVED_PUMPKIN)) {
-      return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+      return SoundEvents.ARMOR_EQUIP_GENERIC;
     }
 
     if (this.sounds.hasSkulls() && isSkull(item)) {
-      return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+      return SoundEvents.ARMOR_EQUIP_GENERIC;
     }
 
     if (this.sounds.hasAnything()) {
-      return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+      return SoundEvents.ARMOR_EQUIP_GENERIC;
     }
 
     return null;

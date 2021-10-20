@@ -2,13 +2,11 @@ package dev.sapphic.armorsoundtweak;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fml.network.FMLNetworkConstants;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraftforge.fmllegacy.network.FMLNetworkConstants;
 
 import java.util.function.Supplier;
 
@@ -20,18 +18,13 @@ public final class ArmorSoundTweak {
     DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> EquipmentConfig::lazy);
 
   public ArmorSoundTweak() {
-    ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> {
-      return Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (s, v) -> true);
-    });
+    ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () ->
+      new IExtensionPoint.DisplayTest(() -> FMLNetworkConstants.IGNORESERVERONLY, (s, v) -> true));
 
     DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ArmorTicker::register);
 
     if (ModList.get().isLoaded("curios")) {
       DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> CuriosTicker::register);
-
-      if (!FMLLoader.isProduction()) {
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> CuriosTicker::sendIdeImc);
-      }
     }
   }
 
