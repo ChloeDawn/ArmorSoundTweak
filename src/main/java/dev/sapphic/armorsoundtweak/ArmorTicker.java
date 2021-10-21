@@ -1,6 +1,5 @@
 package dev.sapphic.armorsoundtweak;
 
-import com.google.common.collect.Iterables;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
