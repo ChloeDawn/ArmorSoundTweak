@@ -38,8 +38,9 @@ public final class EquipmentConfig {
       context.registerConfig(ModConfig.Type.CLIENT, configBuilder.build(), ArmorSoundTweak.MOD_ID + ".toml");
 
       if (ModList.get().isLoaded("cloth-config")) {
-        context.registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class, () ->
-          new ConfigGuiHandler.ConfigGuiFactory(new ScreenFactory(config)));
+        context.registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class, () -> {
+          return new ConfigGuiHandler.ConfigGuiFactory(new ScreenFactory(config));
+        });
       }
 
       return config;

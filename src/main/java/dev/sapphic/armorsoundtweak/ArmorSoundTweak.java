@@ -18,8 +18,9 @@ public final class ArmorSoundTweak {
     DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> EquipmentConfig::lazy);
 
   public ArmorSoundTweak() {
-    ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () ->
-      new IExtensionPoint.DisplayTest(() -> FMLNetworkConstants.IGNORESERVERONLY, (s, v) -> true));
+    ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> {
+      return new IExtensionPoint.DisplayTest(() -> FMLNetworkConstants.IGNORESERVERONLY, (s, v) -> true);
+    });
 
     DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ArmorTicker::register);
 

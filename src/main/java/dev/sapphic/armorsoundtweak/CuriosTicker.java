@@ -44,6 +44,8 @@ final class CuriosTicker extends EquipmentTicker {
     CuriosApi.getCuriosHelper().getCurio(new ItemStack(item))
       .map(curio -> curio.getEquipSound(null)).ifPresentOrElse(sound -> {
         player.playNotifySound(sound.soundEvent(), SoundSource.NEUTRAL, sound.volume(), sound.pitch());
-      }, () -> player.playNotifySound(SoundEvents.ARMOR_EQUIP_GENERIC, SoundSource.NEUTRAL, 1.0F, 1.0F));
+      }, () -> {
+        player.playNotifySound(SoundEvents.ARMOR_EQUIP_GENERIC, SoundSource.NEUTRAL, 1.0F, 1.0F);
+      });
   }
 }
