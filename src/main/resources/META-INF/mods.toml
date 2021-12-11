@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[28,)"
+loaderVersion = "[38,)"
 license = "Apache-2.0"
 
 [[mods]]
@@ -12,17 +12,17 @@ description = """Plays the respective equip sound when (un)equipping armor in a 
 [[dependencies.armorsoundtweak]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.17,1.18)"
+versionRange = "[1.18,1.19)"
 side = "CLIENT"
 
 [[dependencies.armorsoundtweak]]
 modId = "forge"
 mandatory = true
-versionRange = "[37,)"
+versionRange = "[38,)"
 side = "CLIENT"
 
 [[dependencies.armorsoundtweak]]
 modId = "curios"
 mandatory = false
-versionRange = "[1.17.1-5,)"
+versionRange = "[1.18-5,)"
 side = "CLIENT"

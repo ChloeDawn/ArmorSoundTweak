@@ -8,14 +8,14 @@ plugins {
 }
 
 group = "dev.sapphic"
-version = "4.0.1"
+version = "5.0.0"
 
 java {
   withSourcesJar()
 }
 
 minecraft {
-  mappings("official", "1.17.1")
+  mappings("official", "1.18.1")
 
   runs {
     listOf("client", "server").forEach {
@@ -51,20 +51,20 @@ repositories {
 }
 
 dependencies {
-  minecraft("net.minecraftforge:forge:1.17.1-37.1.1")
+  minecraft("net.minecraftforge:forge:1.18.1-39.0.0")
   implementation("org.checkerframework:checker-qual:3.20.0")
-  implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.2.47"))
-  runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.2.4"))
-  compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.2.4:api"))
+  implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:6.1.48"))
+  runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.18-5.0.2.4"))
+  compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.18-5.0.2.4:api"))
 
   // Curios' debug items were removed in 1.17 so we use this for testing
-  runtimeOnly(fg.deobf("curse.maven:curio-of-undying-316873:3475293")) // 1.17.1-5.3.0.0
+  runtimeOnly(fg.deobf("curse.maven:curio-of-undying-316873:3553486")) // 1.18-5.3.0.0
 }
 
 tasks {
   compileJava {
     with(options) {
-      release.set(16)
+      release.set(17)
       isFork = true
       isDeprecation = true
       encoding = "UTF-8"

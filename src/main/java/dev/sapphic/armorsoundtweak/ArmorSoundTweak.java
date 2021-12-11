@@ -6,7 +6,7 @@ import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fmllegacy.network.FMLNetworkConstants;
+import net.minecraftforge.network.NetworkConstants;
 
 import java.util.function.Supplier;
 
@@ -19,7 +19,7 @@ public final class ArmorSoundTweak {
 
   public ArmorSoundTweak() {
     ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> {
-      return new IExtensionPoint.DisplayTest(() -> FMLNetworkConstants.IGNORESERVERONLY, (s, v) -> true);
+      return new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (s, v) -> true);
     });
 
     DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ArmorTicker::register);
