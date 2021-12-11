@@ -2,8 +2,8 @@ import java.time.Instant
 import net.minecraftforge.gradle.common.tasks.SignJar
 
 plugins {
-  id("net.minecraftforge.gradle") version "5.1.23"
-  id("net.nemerosa.versioning") version "2.15.0"
+  id("net.minecraftforge.gradle") version "5.1.26"
+  id("net.nemerosa.versioning") version "2.15.1"
   id("signing")
 }
 
@@ -16,6 +16,7 @@ java {
 
 minecraft {
   mappings("official", "1.17.1")
+
   runs {
     listOf("client", "server").forEach {
       create(it) {
@@ -29,16 +30,19 @@ minecraft {
 
 repositories {
   mavenCentral()
+
   maven("https://maven.shedaniel.me") {
     content {
       includeGroup("me.shedaniel.cloth")
     }
   }
+
   maven("https://maven.theillusivec4.top") {
     content {
       includeGroup("top.theillusivec4.curios")
     }
   }
+
   maven("https://cursemaven.com") {
     content {
       includeGroup("curse.maven")
@@ -47,15 +51,14 @@ repositories {
 }
 
 dependencies {
-  minecraft("net.minecraftforge:forge:1.17.1-37.0.103")
-  implementation("org.checkerframework:checker-qual:3.18.1")
+  minecraft("net.minecraftforge:forge:1.17.1-37.1.1")
+  implementation("org.checkerframework:checker-qual:3.20.0")
   implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38"))
-  runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.1.0"))
-  compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.1.0:api"))
+  runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.2.4"))
+  compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.2.4:api"))
 
   // Curios' debug items were removed in 1.17 so we use this for testing
-  // https://www.curseforge.com/minecraft/mc-mods/curio-of-undying/files/3475293
-  runtimeOnly(fg.deobf("curse.maven:curio-of-undying-316873:3475293"))
+  runtimeOnly(fg.deobf("curse.maven:curio-of-undying-316873:3475293")) // 1.17.1-5.3.0.0
 }
 
 tasks {
