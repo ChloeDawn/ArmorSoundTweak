@@ -53,7 +53,7 @@ repositories {
 dependencies {
   minecraft("net.minecraftforge:forge:1.17.1-37.1.1")
   implementation("org.checkerframework:checker-qual:3.20.0")
-  implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38"))
+  implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.2.47"))
   runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.2.4"))
   compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.2.4:api"))
 
