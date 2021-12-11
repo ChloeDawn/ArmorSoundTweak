@@ -1,8 +1,8 @@
 import java.time.Instant
 
 plugins {
-  id("fabric-loom") version "0.8.22"
-  id("net.nemerosa.versioning") version "2.15.0"
+  id("fabric-loom") version "0.10.64"
+  id("net.nemerosa.versioning") version "2.15.1"
   id("signing")
 }
 
@@ -16,12 +16,12 @@ java {
 dependencies {
   minecraft("com.mojang:minecraft:1.16.5")
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc:fabric-loader:0.11.7")
-  modImplementation(include(fabricApi.module("fabric-api-base", "0.40.1+1.16"))!!)
-  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.40.1+1.16"))!!)
-  implementation(include("com.electronwill.night-config:core:3.6.4")!!)
-  implementation(include("com.electronwill.night-config:toml:3.6.4")!!)
-  implementation("org.checkerframework:checker-qual:3.18.0")
+  modImplementation("net.fabricmc:fabric-loader:0.12.11")
+  modImplementation(include(fabricApi.module("fabric-api-base", "0.42.0+1.16"))!!)
+  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.42.0+1.16"))!!)
+  implementation(include("com.electronwill.night-config:core:3.6.5")!!)
+  implementation(include("com.electronwill.night-config:toml:3.6.5")!!)
+  implementation("org.checkerframework:checker-qual:3.20.0")
 }
 
 tasks {
@@ -68,45 +68,48 @@ tasks {
     )
   }
 
+  remapJar {
+    archiveClassifier.set("fabric")
+  }
+
   with(getByName<Jar>("sourcesJar")) {
     archiveClassifier.set("fabric-${archiveClassifier.get()}")
   }
 
-  assemble {
-    dependsOn(versionFile)
-  }
-}
+  if (hasProperty("signing.mods.keyalias")) {
+    val alias = property("signing.mods.keyalias")
+    val keystore = property("signing.mods.keystore")
+    val password = property("signing.mods.password")
 
-afterEvaluate {
-  // FIXME https://github.com/FabricMC/fabric-loom/issues/452
-  tasks.remapJar {
-    archiveClassifier.set("fabric")
-  }
-}
+    listOf(remapJar, remapSourcesJar).forEach {
+      it.get().doLast {
+        if (!project.file(keystore!!).exists()) {
+          error("Missing keystore $keystore")
+        }
 
-if (hasProperty("signing.mods.keyalias")) {
-  val alias = property("signing.mods.keyalias")
-  val keystore = property("signing.mods.keystore")
-  val password = property("signing.mods.password")
-
-  listOf(tasks.remapJar, tasks.remapSourcesJar).forEach {
-    it.get().doLast {
-      if (!project.file(keystore!!).exists()) {
-        error("Missing keystore $keystore")
+        val file = outputs.files.singleFile
+        ant.invokeMethod(
+          "signjar", mapOf(
+            "jar" to file,
+            "alias" to alias,
+            "storepass" to password,
+            "keystore" to keystore,
+            "verbose" to true,
+            "preservelastmodified" to true
+          )
+        )
+        signing.sign(file)
       }
+    }
+  }
 
-      val file = outputs.files.singleFile
-      ant.invokeMethod(
-        "signjar", mapOf(
-        "jar" to file,
-        "alias" to alias,
-        "storepass" to password,
-        "keystore" to keystore,
-        "verbose" to true,
-        "preservelastmodified" to true
-      )
-      )
-      signing.sign(file)
+  assemble {
+    dependsOn(versionFile, remapJar, remapSourcesJar)
+
+    doFirst {
+      delete(buildDir.resolve("libs").listFiles { _, name ->
+        name.endsWith("-dev.jar")
+      })
     }
   }
 }
