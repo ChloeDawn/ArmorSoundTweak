@@ -22,10 +22,8 @@ import net.minecraft.world.level.block.AbstractSkullBlock;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -40,15 +38,15 @@ public final class ArmorSoundTweak implements ClientModInitializer {
   private List<ItemStack> oldEquipment = Collections.emptyList();
 
   public ArmorSoundTweak() {
-    final Path file = FabricLoader.getInstance().getConfigDir().resolve("armorsoundtweak.toml");
-    final FileConfig config = FileConfig.builder(file).autoreload().build();
-    final ConfigSpec spec = new ConfigSpec();
+    final var file = FabricLoader.getInstance().getConfigDir().resolve("armorsoundtweak.toml");
+    final var config = FileConfig.builder(file).autoreload().build();
+    final var spec = new ConfigSpec();
 
-    final String armor = "sounds.armor";
-    final String elytra = "sounds.elytra";
-    final String skulls = "sounds.skulls";
-    final String pumpkins = "sounds.pumpkins";
-    final String anything = "sounds.anything";
+    final var armor = "sounds.armor";
+    final var elytra = "sounds.elytra";
+    final var skulls = "sounds.skulls";
+    final var pumpkins = "sounds.pumpkins";
+    final var anything = "sounds.anything";
 
     spec.define(armor, true);
     spec.define(elytra, true);
@@ -93,17 +91,17 @@ public final class ArmorSoundTweak implements ClientModInitializer {
       if ((player != null) && (player.level != null) && player.level.isClientSide) {
         final List<ItemStack> equipment = new ArrayList<>(4);
 
-        for (final ItemStack stack : player.getArmorSlots()) {
+        for (final var stack : player.getArmorSlots()) {
           equipment.add(stack.copy());
         }
 
         if (client.screen instanceof AbstractContainerScreen<?>) {
-          final Iterator<ItemStack> newEquipment = equipment.iterator();
-          final Iterator<ItemStack> oldEquipment = this.oldEquipment.iterator();
+          final var newEquipment = equipment.iterator();
+          final var oldEquipment = this.oldEquipment.iterator();
 
           while (oldEquipment.hasNext() && newEquipment.hasNext()) {
-            final ItemStack newItem = newEquipment.next();
-            final ItemStack oldItem = oldEquipment.next();
+            final var newItem = newEquipment.next();
+            final var oldItem = oldEquipment.next();
 
             if (!ItemStack.matches(newItem, oldItem)) {
               final @Nullable SoundEvent sound = this.getEquipSound(newItem, oldItem);
@@ -121,7 +119,7 @@ public final class ArmorSoundTweak implements ClientModInitializer {
   }
 
   private @Nullable SoundEvent getEquipSound(final ItemStack newItem, final ItemStack oldItem) {
-    final Item item = (newItem.isEmpty() ? oldItem : newItem).getItem();
+    final var item = (newItem.isEmpty() ? oldItem : newItem).getItem();
 
     if (this.armor.get() && (item instanceof ArmorItem)) {
       return ((ArmorItem) item).getMaterial().getEquipSound();

@@ -7,18 +7,18 @@ plugins {
 }
 
 group = "dev.sapphic"
-version = "3.1.0"
+version = "4.0.0"
 
 java {
   withSourcesJar()
 }
 
 dependencies {
-  minecraft("com.mojang:minecraft:1.16.5")
+  minecraft("com.mojang:minecraft:1.17.1")
   mappings(loom.officialMojangMappings())
   modImplementation("net.fabricmc:fabric-loader:0.12.11")
-  modImplementation(include(fabricApi.module("fabric-api-base", "0.42.0+1.16"))!!)
-  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.42.0+1.16"))!!)
+  modImplementation(include(fabricApi.module("fabric-api-base", "0.44.0+1.17"))!!)
+  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.44.0+1.17"))!!)
   implementation(include("com.electronwill.night-config:core:3.6.5")!!)
   implementation(include("com.electronwill.night-config:toml:3.6.5")!!)
   implementation("org.checkerframework:checker-qual:3.20.0")
@@ -27,7 +27,7 @@ dependencies {
 tasks {
   compileJava {
     with(options) {
-      release.set(8)
+      release.set(16)
       isFork = true
       isDeprecation = true
       encoding = "UTF-8"
