@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "dev.sapphic"
-version = "5.1.1"
+version = "6.0.0"
 
 java {
   withSourcesJar()
@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-  minecraft("com.mojang:minecraft:1.18.2")
+  minecraft("com.mojang:minecraft:1.19")
   mappings(loom.layered {
     officialMojangMappings {
       nameSyntheticMembers = true
@@ -45,15 +45,15 @@ dependencies {
 
   modImplementation("net.fabricmc:fabric-loader:0.14.8")
 
-  modImplementation(include(fabricApi.module("fabric-api-base", "0.56.1+1.18.2"))!!)
-  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.56.1+1.18.2"))!!)
-  modImplementation(include(fabricApi.module("fabric-resource-loader-v0", "0.56.1+1.18.2"))!!)
+  modImplementation(include(fabricApi.module("fabric-api-base", "0.56.2+1.19"))!!)
+  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.56.2+1.19"))!!)
+  modImplementation(include(fabricApi.module("fabric-resource-loader-v0", "0.56.2+1.19"))!!)
 
-  modImplementation(include("me.shedaniel.cloth:cloth-config-fabric:6.2.62") {
+  modImplementation(include("me.shedaniel.cloth:cloth-config-fabric:7.0.72") {
     exclude(group = "net.fabricmc.fabric-api")
   })
 
-  modImplementation("com.terraformersmc:modmenu:3.2.2")
+  modImplementation("com.terraformersmc:modmenu:4.0.0")
 
   implementation(include("com.electronwill.night-config:core:3.6.5")!!)
   implementation(include("com.electronwill.night-config:toml:3.6.5")!!)
