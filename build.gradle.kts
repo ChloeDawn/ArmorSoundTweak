@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "dev.sapphic"
-version = "5.0.0"
+version = "5.1.0"
 
 java {
   withSourcesJar()
@@ -110,6 +110,14 @@ tasks {
 
       "Sealed" to "true"
     )
+  }
+
+  remapJar {
+    archiveClassifier.set("fabric")
+  }
+
+  remapSourcesJar {
+    archiveClassifier.set("fabric-sources")
   }
 
   if (hasProperty("signing.mods.keyalias")) {
