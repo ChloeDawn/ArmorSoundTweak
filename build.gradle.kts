@@ -1,8 +1,8 @@
 import java.time.Instant
 
 plugins {
-  id("fabric-loom") version "0.10.64"
-  id("net.nemerosa.versioning") version "2.15.1"
+  id("fabric-loom") version "0.12.51"
+  id("net.nemerosa.versioning") version "3.0.0"
   id("signing")
 }
 
@@ -13,25 +13,69 @@ java {
   withSourcesJar()
 }
 
+loom {
+  runs {
+    configureEach {
+      vmArgs("-Xmx4G", "-XX:+UseZGC")
+    }
+  }
+}
+
+repositories {
+  maven("https://maven.shedaniel.me") {
+    content {
+      includeGroup("me.shedaniel.cloth")
+    }
+  }
+
+  maven("https://maven.terraformersmc.com/releases") {
+    content {
+      includeGroup("com.terraformersmc")
+    }
+  }
+}
+
 dependencies {
-  minecraft("com.mojang:minecraft:1.18.1")
-  mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc:fabric-loader:0.12.11")
-  modImplementation(include(fabricApi.module("fabric-api-base", "0.44.0+1.18"))!!)
-  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.44.0+1.18"))!!)
+  minecraft("com.mojang:minecraft:1.18.2")
+  mappings(loom.layered {
+    officialMojangMappings {
+      nameSyntheticMembers = true
+    }
+  })
+
+  modImplementation("net.fabricmc:fabric-loader:0.14.8")
+
+  modImplementation(include(fabricApi.module("fabric-api-base", "0.56.1+1.18.2"))!!)
+  modImplementation(include(fabricApi.module("fabric-lifecycle-events-v1", "0.56.1+1.18.2"))!!)
+  modImplementation(include(fabricApi.module("fabric-resource-loader-v0", "0.56.1+1.18.2"))!!)
+
+  modImplementation(include("me.shedaniel.cloth:cloth-config-fabric:6.2.62") {
+    exclude(group = "net.fabricmc.fabric-api")
+  })
+
+  modImplementation("com.terraformersmc:modmenu:3.2.2")
+
   implementation(include("com.electronwill.night-config:core:3.6.5")!!)
   implementation(include("com.electronwill.night-config:toml:3.6.5")!!)
-  implementation("org.checkerframework:checker-qual:3.20.0")
+
+  implementation("org.checkerframework:checker-qual:3.22.1")
 }
 
 tasks {
   compileJava {
     with(options) {
-      release.set(17)
-      isFork = true
       isDeprecation = true
       encoding = "UTF-8"
-      compilerArgs.addAll(listOf("-Xlint:all", "-parameters"))
+      isFork = true
+      compilerArgs.addAll(
+        listOf(
+          "-Xlint:all", "-Xlint:-processing",
+          // Enable parameter name class metadata 
+          // https://openjdk.java.net/jeps/118
+          "-parameters"
+        )
+      )
+      release.set(17)
     }
   }
 
@@ -68,48 +112,45 @@ tasks {
     )
   }
 
-  remapJar {
-    archiveClassifier.set("fabric")
-  }
-
-  with(getByName<Jar>("sourcesJar")) {
-    archiveClassifier.set("fabric-${archiveClassifier.get()}")
-  }
-
   if (hasProperty("signing.mods.keyalias")) {
     val alias = property("signing.mods.keyalias")
     val keystore = property("signing.mods.keystore")
     val password = property("signing.mods.password")
 
-    listOf(remapJar, remapSourcesJar).forEach {
-      it.get().doLast {
-        if (!project.file(keystore!!).exists()) {
-          error("Missing keystore $keystore")
-        }
-
-        val file = outputs.files.singleFile
-        ant.invokeMethod(
-          "signjar", mapOf(
-            "jar" to file,
-            "alias" to alias,
-            "storepass" to password,
-            "keystore" to keystore,
-            "verbose" to true,
-            "preservelastmodified" to true
-          )
-        )
-        signing.sign(file)
-      }
+    fun Sign.antSignJar(task: Task) = task.outputs.files.forEach { file ->
+      ant.invokeMethod(
+        "signjar", mapOf(
+          "jar" to file,
+          "alias" to alias,
+          "storepass" to password,
+          "keystore" to keystore,
+          "verbose" to true,
+          "preservelastmodified" to true
+        ))
     }
-  }
 
-  assemble {
-    dependsOn(versionFile, remapJar, remapSourcesJar)
+    val signJar by creating(Sign::class) {
+      dependsOn(remapJar)
 
-    doFirst {
-      delete(buildDir.resolve("libs").listFiles { _, name ->
-        name.endsWith("-dev.jar")
-      })
+      doFirst {
+        antSignJar(remapJar.get())
+      }
+
+      sign(remapJar.get())
+    }
+
+    val signSourcesJar by creating(Sign::class) {
+      dependsOn(remapSourcesJar)
+
+      doFirst {
+        antSignJar(remapSourcesJar.get())
+      }
+
+      sign(remapSourcesJar.get())
+    }
+
+    assemble {
+      dependsOn(signJar, signSourcesJar)
     }
   }
 }

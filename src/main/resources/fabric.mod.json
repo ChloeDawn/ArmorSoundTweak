@@ -3,27 +3,35 @@
   "id": "armorsoundtweak",
   "name": "Armor Sound Tweak",
   "version": "$version",
-  "description": "Plays the respective equip sound when (un)equipping armor in a menu",
+  "description": "Plays the respective equip sound when (un)equipping armor in a menu.",
   "environment": "client",
   "license": "Apache-2.0",
   "depends": {
-    "fabric-api-base": ">=0.4.1",
-    "fabric-lifecycle-events-v1": ">=1.4.10",
-    "fabricloader": ">=0.12.11",
-    "minecraft": "1.18.x",
+    "fabric-api-base": ">=0.4.4",
+    "fabric-lifecycle-events-v1": ">=2.1.0",
+    "fabric-resource-loader-v0": ">=0.5.2",
+    "fabricloader": ">=0.14.6",
+    "minecraft": ">=1.18.2",
     "java": ">=17"
+  },
+  "suggests": {
+    "cloth-config": "*",
+    "modmenu": ""
   },
   "entrypoints": {
     "client": [
       "dev.sapphic.armorsoundtweak.ArmorSoundTweak"
+    ],
+    "modmenu": [
+      "dev.sapphic.armorsoundtweak.integration.modmenu.ModMenuIntegration"
     ]
   },
   "authors": [
     "Chloe Dawn"
   ],
   "contact": {
-    "homepage": "https://bit.ly/3BmDKHA",
-    "sources": "https://git.io/JJuZP",
-    "issues": "https://git.io/JePYt"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/armor-sound-tweak",
+    "sources": "https://github.com/ChloeDawn/ArmorSoundTweak/tree/$version",
+    "issues": "https://github.com/ChloeDawn/ArmorSoundTweak/issues"
   }
 }
