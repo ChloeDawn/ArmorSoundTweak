@@ -2,20 +2,20 @@ import java.time.Instant
 import net.minecraftforge.gradle.common.tasks.SignJar
 
 plugins {
-  id("net.minecraftforge.gradle") version "5.1.26"
-  id("net.nemerosa.versioning") version "2.15.1"
-  id("signing")
+  id("net.minecraftforge.gradle") version "5.1.48"
+  id("net.nemerosa.versioning") version "3.0.0"
+  id("org.gradle.signing")
 }
 
 group = "dev.sapphic"
-version = "5.0.0"
+version = "6.0.0"
 
 java {
   withSourcesJar()
 }
 
 minecraft {
-  mappings("official", "1.18.1")
+  mappings("official", "1.19")
 
   runs {
     listOf("client", "server").forEach {
@@ -51,24 +51,36 @@ repositories {
 }
 
 dependencies {
-  minecraft("net.minecraftforge:forge:1.18.1-39.0.0")
-  implementation("org.checkerframework:checker-qual:3.20.0")
-  implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:6.1.48"))
-  runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.18-5.0.2.4"))
-  compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.18-5.0.2.4:api"))
+  minecraft("net.minecraftforge:forge:1.19-41.0.45")
+
+  implementation(fg.deobf("me.shedaniel.cloth:cloth-config-forge:7.0.72"))
+
+  runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.2"))
+  compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.2:api"))
 
   // Curios' debug items were removed in 1.17 so we use this for testing
-  runtimeOnly(fg.deobf("curse.maven:curio-of-undying-316873:3553486")) // 1.18-5.3.0.0
+  runtimeOnly(fg.deobf("curse.maven:technobauble-492052:3836078")) // 0.5.0.1
+  runtimeOnly(fg.deobf("curse.maven:bdlib-70496:3836059")) // 1.20.0.3
+  runtimeOnly(fg.deobf("curse.maven:scalable-cats-force-320926:3759354")) // 2.13.8-build-4
+
+  implementation("org.checkerframework:checker-qual:3.22.1")
 }
 
 tasks {
   compileJava {
     with(options) {
-      release.set(17)
-      isFork = true
       isDeprecation = true
       encoding = "UTF-8"
-      compilerArgs.addAll(listOf("-Xlint:all", "-parameters"))
+      isFork = true
+      compilerArgs.addAll(
+        listOf(
+          "-Xlint:all", "-Xlint:-processing",
+          // Enable parameter name class metadata 
+          // https://openjdk.java.net/jeps/118
+          "-parameters"
+        )
+      )
+      release.set(17)
     }
   }
 
@@ -104,7 +116,7 @@ tasks {
   }
 
   val sourcesJar by getting(Jar::class) {
-    archiveClassifier.set("forge-${archiveClassifier.get()}")
+    archiveClassifier.set("forge-sources")
   }
 
   if (project.hasProperty("signing.mods.keyalias")) {

@@ -7,7 +7,7 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.BooleanListEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
@@ -113,19 +113,19 @@ public final class EquipmentConfig {
     }
 
     private static ConfigCategory category(final ConfigBuilder config, final String name) {
-      return config.getOrCreateCategory(new TranslatableComponent(ArmorSoundTweak.MOD_ID + ".config." + name));
+      return config.getOrCreateCategory(Component.translatable(ArmorSoundTweak.MOD_ID + ".config." + name));
     }
 
     private static BooleanListEntry bool(final ConfigEntryBuilder builder, final String name, final BooleanValue value, final boolean defaultValue) {
       return builder.startBooleanToggle(
-        new TranslatableComponent(ArmorSoundTweak.MOD_ID + ".config." + name), value.get()
+        Component.translatable(ArmorSoundTweak.MOD_ID + ".config." + name), value.get()
       ).setSaveConsumer(value::set).setDefaultValue(defaultValue).build();
     }
 
     @Override
     public Screen apply(final Minecraft minecraft, final Screen screen) {
       final var config = ConfigBuilder.create()
-        .setTitle(new TranslatableComponent(ArmorSoundTweak.MOD_ID + ".config"));
+        .setTitle(Component.translatable(ArmorSoundTweak.MOD_ID + ".config"));
       final var entries = config.entryBuilder();
 
       final var slots = this.config.slots;
