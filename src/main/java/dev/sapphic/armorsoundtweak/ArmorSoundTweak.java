@@ -186,7 +186,7 @@ public final class ArmorSoundTweak implements ClientModInitializer {
             final var newItem = newEquipment.next();
             final var oldItem = oldEquipment.next();
 
-            if (!ItemStack.matches(newItem, oldItem)) {
+            if (!newItem.is(oldItem.getItem())) {
               final @Nullable SoundEvent sound = getEquipSound(newItem, oldItem);
 
               if (sound != null) {
